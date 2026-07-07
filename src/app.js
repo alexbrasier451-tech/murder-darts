@@ -32,6 +32,8 @@ const DISPLAY_TARGETS = [
 ];
 const NUMBER_BUTTONS = Array.from({ length: 20 }, (_, index) => 20 - index);
 const QUICK_X01_SCORES = [26, 41, 45, 60, 81, 100, 121, 140, 180];
+const X01_ONE_DART_SCORES = buildOneDartScores();
+const X01_TWO_DART_SCORES = buildTwoDartScores(X01_ONE_DART_SCORES);
 
 const app = document.querySelector("#app");
 
@@ -41,7 +43,7 @@ let murderMatch = loadJson(MURDER_STORAGE_KEY);
 let x01Match = loadJson(X01_STORAGE_KEY);
 let selectedSegment = "single";
 let pendingChoices = null;
-let x01DartsUsed = 3;
+let pendingX01Checkout = null;
 
 render();
 registerServiceWorker();
@@ -423,7 +425,6 @@ function renderX01Setup() {
       formatTarget: Number(form.get("formatTarget")),
       legsPerSet: Number(form.get("legsPerSet"))
     });
-    x01DartsUsed = 3;
     saveX01Match();
     view = "x01-match";
     render();
@@ -495,18 +496,6 @@ function renderX01Match() {
                 <input id="x01-score-input" name="score" type="number" inputmode="numeric" min="0" max="180" autocomplete="off" value="">
               </label>
 
-              <div class="segment-control x01-darts-control" role="group" aria-label="Darts used">
-                ${[1, 2, 3]
-                  .map(
-                    (darts) => `
-                      <button class="${x01DartsUsed === darts ? "is-selected" : ""}" type="button" data-darts-used="${darts}">
-                        ${darts} dart${darts === 1 ? "" : "s"}
-                      </button>
-                    `
-                  )
-                  .join("")}
-              </div>
-
               ${
                 x01Match.settings.doubleIn && !activePlayer.isIn
                   ? `
@@ -539,6 +528,7 @@ function renderX01Match() {
         `
         : ""
     }
+    ${pendingX01Checkout ? renderX01CheckoutDartSheet() : ""}
   `;
 
   wireNavigation();
@@ -595,10 +585,40 @@ function renderX01HistoryEntry(entry) {
   `;
 }
 
+function renderX01CheckoutDartSheet() {
+  const minimum = minimumX01CheckoutDarts(pendingX01Checkout.score);
+  return `
+    <div class="choice-backdrop" data-action="cancel-x01-checkout">
+      <section class="choice-sheet" role="dialog" aria-modal="true" aria-labelledby="x01-checkout-title">
+        <div class="choice-head">
+          <div>
+            <p class="eyebrow">Out ${pendingX01Checkout.score}</p>
+            <h2 id="x01-checkout-title">Darts used?</h2>
+          </div>
+          <button class="icon-action" type="button" data-action="cancel-x01-checkout" aria-label="Close">x</button>
+        </div>
+        <div class="choice-list">
+          ${[1, 2, 3]
+            .filter((darts) => darts >= minimum)
+            .map(
+              (darts) => `
+                <button type="button" data-x01-checkout-darts="${darts}">
+                  <span>${darts} dart${darts === 1 ? "" : "s"}</span>
+                  <small>Record the winning visit</small>
+                </button>
+              `
+            )
+            .join("")}
+        </div>
+      </section>
+    </div>
+  `;
+}
 function wireNavigation() {
   document.querySelectorAll("[data-action='menu']").forEach((button) => {
     button.addEventListener("click", () => {
       pendingChoices = null;
+      pendingX01Checkout = null;
       view = "menu";
       render();
     });
@@ -632,6 +652,7 @@ function wireNavigation() {
   document.querySelectorAll("[data-action='show-x01-setup']").forEach((button) => {
     button.addEventListener("click", () => {
       if (!x01Match || confirm("Start a new X01 match?")) {
+        pendingX01Checkout = null;
         x01Match = null;
         localStorage.removeItem(X01_STORAGE_KEY);
         view = "x01-setup";
@@ -710,13 +731,6 @@ function wireMurderEvents() {
   });
 }
 function wireX01Events() {
-  document.querySelectorAll("[data-darts-used]").forEach((button) => {
-    button.addEventListener("click", () => {
-      x01DartsUsed = Number(button.dataset.dartsUsed);
-      render();
-    });
-  });
-
   document.querySelectorAll("[data-x01-score]").forEach((button) => {
     button.addEventListener("click", () => {
       const input = document.querySelector("#x01-score-input");
@@ -727,6 +741,7 @@ function wireX01Events() {
 
   document.querySelectorAll("[data-action='x01-undo']").forEach((button) => {
     button.addEventListener("click", () => {
+      pendingX01Checkout = null;
       x01Match = undoX01Visit(x01Match);
       saveX01Match();
       render();
@@ -736,9 +751,32 @@ function wireX01Events() {
   document.querySelectorAll("[data-action='x01-new']").forEach((button) => {
     button.addEventListener("click", () => {
       if (!x01Match.history.length || x01Match.status === "finished" || confirm("Start a new X01 match?")) {
+        pendingX01Checkout = null;
         x01Match = null;
         localStorage.removeItem(X01_STORAGE_KEY);
         view = "x01-setup";
+        render();
+      }
+    });
+  });
+
+  document.querySelectorAll("[data-x01-checkout-darts]").forEach((button) => {
+    button.addEventListener("click", () => {
+      try {
+        recordX01Visit({
+          ...pendingX01Checkout,
+          darts: Number(button.dataset.x01CheckoutDarts)
+        });
+      } catch (error) {
+        alert(error.message);
+      }
+    });
+  });
+
+  document.querySelectorAll("[data-action='cancel-x01-checkout']").forEach((element) => {
+    element.addEventListener("click", (event) => {
+      if (event.target === element || element.matches("button")) {
+        pendingX01Checkout = null;
         render();
       }
     });
@@ -751,18 +789,33 @@ function wireX01Events() {
       const formData = new FormData(event.currentTarget);
 
       try {
-        x01Match = applyX01Visit(x01Match, {
-          score: formData.get("score") || 0,
-          darts: x01DartsUsed,
+        const visit = {
+          score: normalizeX01ScoreInput(formData.get("score") || 0),
           doubleInHit: Boolean(formData.get("doubleInHit"))
+        };
+
+        if (shouldAskForX01CheckoutDarts(visit)) {
+          pendingX01Checkout = visit;
+          render();
+          return;
+        }
+
+        recordX01Visit({
+          ...visit,
+          darts: 3
         });
-        saveX01Match();
-        render();
       } catch (error) {
         alert(error.message);
       }
     });
   }
+}
+
+function recordX01Visit(visit) {
+  x01Match = applyX01Visit(x01Match, visit);
+  pendingX01Checkout = null;
+  saveX01Match();
+  render();
 }
 
 function handleMurderHit(hit) {
@@ -951,6 +1004,52 @@ function formatAverage(value) {
   return value ? value.toFixed(2) : "0.00";
 }
 
+function shouldAskForX01CheckoutDarts(visit) {
+  const player = x01Match.players[x01Match.activePlayerIndex];
+  const doubleInSatisfied =
+    !x01Match.settings.doubleIn || player.isIn || (visit.score > 0 && visit.doubleInHit);
+
+  return doubleInSatisfied && player.remaining - visit.score === 0 && minimumX01CheckoutDarts(visit.score) <= 2;
+}
+
+function normalizeX01ScoreInput(score) {
+  const value = Number(score);
+  if (!Number.isInteger(value) || value < 0 || value > 180) {
+    throw new Error("Score must be between 0 and 180.");
+  }
+  return value;
+}
+
+function minimumX01CheckoutDarts(score) {
+  if (X01_ONE_DART_SCORES.has(score)) {
+    return 1;
+  }
+  if (X01_TWO_DART_SCORES.has(score)) {
+    return 2;
+  }
+  return 3;
+}
+
+function buildOneDartScores() {
+  const scores = new Set([25, 50]);
+  for (let number = 1; number <= 20; number += 1) {
+    scores.add(number);
+    scores.add(number * 2);
+    scores.add(number * 3);
+  }
+  return scores;
+}
+
+function buildTwoDartScores(oneDartScores) {
+  const scores = new Set(oneDartScores);
+  const values = Array.from(oneDartScores);
+  values.forEach((first) => {
+    values.forEach((second) => {
+      scores.add(first + second);
+    });
+  });
+  return scores;
+}
 function normalizeName(name) {
   const trimmed = String(name || "").trim();
   return trimmed || "Player";
