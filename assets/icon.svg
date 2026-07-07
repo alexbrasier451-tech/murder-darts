@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">Murder Darts icon</title>
+  <rect width="512" height="512" rx="88" fill="#111315"/>
+  <circle cx="256" cy="256" r="178" fill="#f5f1e8"/>
+  <circle cx="256" cy="256" r="150" fill="#111315"/>
+  <path d="M256 106a150 150 0 0 1 150 150H256Z" fill="#d24646"/>
+  <path d="M256 256h150a150 150 0 0 1-150 150Z" fill="#0f6b4a"/>
+  <path d="M106 256a150 150 0 0 1 150-150v150Z" fill="#0f6b4a"/>
+  <path d="M256 256v150a150 150 0 0 1-150-150Z" fill="#d24646"/>
+  <circle cx="256" cy="256" r="86" fill="#f5f1e8"/>
+  <circle cx="256" cy="256" r="54" fill="#111315"/>
+  <circle cx="256" cy="256" r="28" fill="#d8aa3f"/>
+  <path d="M363 117 395 73l16 42 45 7-38 27 8 45-36-27-41 22 14-43-33-32Z" fill="#d8aa3f"/>
+  <path d="m339 170 25-44 18 17-33 37Z" fill="#f5f1e8"/>
+</svg>
+
