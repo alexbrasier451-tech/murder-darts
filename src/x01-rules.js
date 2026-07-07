@@ -65,16 +65,11 @@ export function applyX01Visit(match, visit) {
       bust = true;
       message = "Bust";
     } else if (proposedRemaining === 0) {
-      if (visit.checkoutDouble) {
-        checkout = true;
-        countedScore = score;
-        player.remaining = 0;
-        player.bestOut = Math.max(player.bestOut, remainingBefore);
-        message = `Checked out ${remainingBefore}`;
-      } else {
-        bust = true;
-        message = "Bust: finish on a double";
-      }
+      checkout = true;
+      countedScore = score;
+      player.remaining = 0;
+      player.bestOut = Math.max(player.bestOut, remainingBefore);
+      message = `Checked out ${remainingBefore}`;
     } else {
       countedScore = score;
       player.remaining = proposedRemaining;

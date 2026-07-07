@@ -507,22 +507,18 @@ function renderX01Match() {
                   .join("")}
               </div>
 
-              <div class="x01-toggle-row">
-                ${
-                  x01Match.settings.doubleIn && !activePlayer.isIn
-                    ? `
+              ${
+                x01Match.settings.doubleIn && !activePlayer.isIn
+                  ? `
+                    <div class="x01-toggle-row">
                       <label class="toggle-field">
                         <input name="doubleInHit" type="checkbox">
                         <span>Double-in hit</span>
                       </label>
-                    `
-                    : ""
-                }
-                <label class="toggle-field">
-                  <input name="checkoutDouble" type="checkbox">
-                  <span>Finishing double hit</span>
-                </label>
-              </div>
+                    </div>
+                  `
+                  : ""
+              }
 
               <div class="quick-score-grid" aria-label="Quick scores">
                 ${QUICK_X01_SCORES.map((score) => `<button type="button" data-x01-score="${score}">${score}</button>`).join("")}
@@ -758,8 +754,7 @@ function wireX01Events() {
         x01Match = applyX01Visit(x01Match, {
           score: formData.get("score") || 0,
           darts: x01DartsUsed,
-          doubleInHit: Boolean(formData.get("doubleInHit")),
-          checkoutDouble: Boolean(formData.get("checkoutDouble"))
+          doubleInHit: Boolean(formData.get("doubleInHit"))
         });
         saveX01Match();
         render();

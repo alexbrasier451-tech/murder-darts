@@ -32,7 +32,7 @@ test("double-in blocks scoring until a double-in hit is confirmed", () => {
   assert.equal(match.players[1].isIn, true);
 });
 
-test("busts leave the remaining score unchanged but count darts", () => {
+test("busts when the score exceeds the remaining total or leaves one", () => {
   let match = createX01Match({ playerNames: ["A", "B"], startScore: 101 });
 
   match = applyX01Visit(match, { score: 100, darts: 2 });
@@ -41,9 +41,15 @@ test("busts leave the remaining score unchanged but count darts", () => {
   assert.equal(match.players[0].totalDarts, 2);
   assert.equal(match.players[0].totalScored, 0);
   assert.equal(match.history[0].bust, true);
+
+  match = applyX01Visit(match, { score: 102, darts: 2 });
+
+  assert.equal(match.players[1].remaining, 101);
+  assert.equal(match.players[1].totalScored, 0);
+  assert.equal(match.history[1].bust, true);
 });
 
-test("checkout requires a finishing double and records best out", () => {
+test("exact checkout records best out", () => {
   let match = createX01Match({
     playerNames: ["A", "B"],
     startScore: 101,
@@ -51,12 +57,7 @@ test("checkout requires a finishing double and records best out", () => {
     formatTarget: 1
   });
 
-  match = applyX01Visit(match, { score: 101, darts: 2, checkoutDouble: false });
-  assert.equal(match.status, "playing");
-  assert.equal(match.players[0].remaining, 101);
-
-  match = undoX01Visit(match);
-  match = applyX01Visit(match, { score: 101, darts: 2, checkoutDouble: true });
+  match = applyX01Visit(match, { score: 101, darts: 2 });
 
   assert.equal(match.status, "finished");
   assert.equal(match.winnerIndex, 0);
@@ -72,15 +73,15 @@ test("race to sets awards sets and finishes at the target", () => {
     legsPerSet: 1
   });
 
-  match = applyX01Visit(match, { score: 2, darts: 1, checkoutDouble: true });
+  match = applyX01Visit(match, { score: 2, darts: 1 });
   assert.equal(match.players[0].sets, 1);
   assert.equal(match.status, "playing");
 
-  match = applyX01Visit(match, { score: 2, darts: 1, checkoutDouble: true });
+  match = applyX01Visit(match, { score: 2, darts: 1 });
   assert.equal(match.players[1].sets, 1);
   assert.equal(match.status, "playing");
 
-  match = applyX01Visit(match, { score: 2, darts: 1, checkoutDouble: true });
+  match = applyX01Visit(match, { score: 2, darts: 1 });
   assert.equal(match.players[0].sets, 2);
   assert.equal(match.status, "finished");
   assert.equal(match.winnerIndex, 0);

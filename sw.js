@@ -1,4 +1,4 @@
-const CACHE_NAME = "murder-darts-v10";
+const CACHE_NAME = "murder-darts-v11";
 
 const ASSETS = [
   "./",
