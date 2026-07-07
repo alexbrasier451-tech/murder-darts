@@ -1,7 +1,7 @@
 {
-  "name": "Murder Darts Scorer",
-  "short_name": "Murder",
-  "description": "A fast two-team scorer for the darts game Murder.",
+  "name": "Darts Night Scorer",
+  "short_name": "Darts Night",
+  "description": "A fast mobile darts scorer for Murder and X01.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

@@ -1,10 +1,10 @@
 {
-  "name": "murder-darts-scorer",
+  "name": "darts-night-scorer",
   "version": "0.1.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node tests/rules.test.mjs",
+    "test": "node tests/rules.test.mjs && node tests/x01-rules.test.mjs",
     "serve": "python -m http.server 5173"
   }
 }

@@ -1,4 +1,4 @@
-const CACHE_NAME = "murder-darts-v8";
+const CACHE_NAME = "murder-darts-v9";
 
 const ASSETS = [
   "./",
@@ -8,7 +8,8 @@ const ASSETS = [
   "./assets/icon.svg",
   "./assets/icon-maskable.svg",
   "./src/app.js",
-  "./src/rules.js"
+  "./src/rules.js",
+  "./src/x01-rules.js"
 ];
 
 self.addEventListener("install", (event) => {

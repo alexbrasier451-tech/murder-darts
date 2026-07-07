@@ -1,6 +1,6 @@
 # Android Installation
 
-Murder Darts is a Progressive Web App, so the best install path is not an APK installer. Install it from Android Chrome once the app is hosted over HTTPS.
+Darts Night is a Progressive Web App, so the best install path is not an APK installer. Install it from Android Chrome once the app is hosted over HTTPS.
 
 
 ## One-Command GitHub Publish
@@ -35,7 +35,7 @@ Use this when you want the app installed on your phone like a normal app.
 7. Open the published `https://...github.io/.../` URL on your Android phone in Chrome.
 8. Open the Chrome menu.
 9. Tap **Add to Home screen** or **Install app**.
-10. Launch **Murder** from the new home-screen icon.
+10. Launch **Darts Night** from the new home-screen icon.
 
 After the first successful visit, the service worker caches the app so it can reload offline.
 
@@ -87,7 +87,7 @@ Check these first:
 If needed, open PowerShell as Administrator and allow the dev port:
 
 ```powershell
-New-NetFirewallRule -DisplayName "Murder Darts PWA dev server 5174" -Direction Inbound -Action Allow -Protocol TCP -LocalPort 5174 -Profile Private
+New-NetFirewallRule -DisplayName "Darts Night PWA dev server 5174" -Direction Inbound -Action Allow -Protocol TCP -LocalPort 5174 -Profile Private
 ```
 
 ## Updating An Installed Version
