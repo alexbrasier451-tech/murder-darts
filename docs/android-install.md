@@ -2,6 +2,26 @@
 
 Murder Darts is a Progressive Web App, so the best install path is not an APK installer. Install it from Android Chrome once the app is hosted over HTTPS.
 
+
+## One-Command GitHub Publish
+
+After GitHub CLI is installed and logged in, this repository includes a helper script that creates the GitHub repo, pushes the current `main` branch, enables GitHub Pages, and prints the Pages URL:
+
+```powershell
+.\scripts\publish-github-pages.ps1
+```
+
+By default it creates a public repository named `murder-darts`, which is the simplest option for phone installation. To choose a different repo name:
+
+```powershell
+.\scripts\publish-github-pages.ps1 -RepoName "my-darts-scorer"
+```
+
+If GitHub CLI is not logged in yet, run:
+
+```powershell
+gh auth login --hostname github.com --git-protocol https --web --scopes repo
+```
 ## Best Option: GitHub Pages
 
 Use this when you want the app installed on your phone like a normal app.
