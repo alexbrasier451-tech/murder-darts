@@ -55,9 +55,9 @@ if ($status) {
 }
 
 $visibility = if ($Private) { "--private" } else { "--public" }
-$origin = git remote get-url origin 2>$null
+$hasOrigin = (git remote) -contains "origin"
 
-if (-not $origin) {
+if (-not $hasOrigin) {
   Invoke-Checked $gh @("repo", "create", $RepoName, $visibility, "--source", ".", "--remote", "origin", "--push") "Failed to create or push the GitHub repository."
 } else {
   Invoke-Checked "git" @("push", "-u", "origin", $branch) "Failed to push to the existing origin remote."
@@ -68,25 +68,12 @@ if (-not $fullName) {
   throw "Could not determine the GitHub repository name."
 }
 
-$body = @{
-  source = @{
-    branch = $branch
-    path = "/"
-  }
-} | ConvertTo-Json -Depth 5
-
-$tempBody = New-TemporaryFile
-try {
-  Set-Content -LiteralPath $tempBody.FullName -Value $body -Encoding UTF8
-  & $gh api "repos/$fullName/pages" --method POST --input $tempBody.FullName | Out-Null
+& $gh api "repos/$fullName/pages" --method POST -f "source[branch]=$branch" -f "source[path]=/" | Out-Null
+if ($LASTEXITCODE -ne 0) {
+  & $gh api "repos/$fullName/pages" --method PUT -f "source[branch]=$branch" -f "source[path]=/" | Out-Null
   if ($LASTEXITCODE -ne 0) {
-    & $gh api "repos/$fullName/pages" --method PUT --input $tempBody.FullName | Out-Null
-    if ($LASTEXITCODE -ne 0) {
-      throw "Failed to enable or update GitHub Pages."
-    }
+    throw "Failed to enable or update GitHub Pages."
   }
-} finally {
-  Remove-Item -LiteralPath $tempBody.FullName -Force -ErrorAction SilentlyContinue
 }
 
 $pagesUrl = (& $gh api "repos/$fullName/pages" --jq ".html_url").Trim()
