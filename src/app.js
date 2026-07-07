@@ -373,7 +373,7 @@ function renderX01Setup() {
         </label>
         <label>
           <span>Format</span>
-          <select name="format">
+          <select name="format" id="x01-format-select">
             <option value="${X01_FORMATS.BEST_OF_LEGS}">Best of legs</option>
             <option value="${X01_FORMATS.RACE_TO_LEGS}">Race to legs</option>
             <option value="${X01_FORMATS.RACE_TO_SETS}">Race to sets</option>
@@ -383,7 +383,7 @@ function renderX01Setup() {
           <span>Target</span>
           <input name="formatTarget" type="number" inputmode="numeric" min="1" max="21" value="5">
         </label>
-        <label>
+        <label class="x01-sets-field is-hidden" aria-hidden="true">
           <span>Legs per set</span>
           <input name="legsPerSet" type="number" inputmode="numeric" min="1" max="11" value="3">
         </label>
@@ -397,7 +397,18 @@ function renderX01Setup() {
   `;
 
   wireNavigation();
-  document.querySelector("#x01-setup-form").addEventListener("submit", (event) => {
+  const setupForm = document.querySelector("#x01-setup-form");
+  const formatSelect = setupForm.elements.format;
+  const setsField = setupForm.querySelector(".x01-sets-field");
+  const syncSetsField = () => {
+    const needsSets = formatSelect.value === X01_FORMATS.RACE_TO_SETS;
+    setsField.classList.toggle("is-hidden", !needsSets);
+    setsField.setAttribute("aria-hidden", String(!needsSets));
+  };
+
+  syncSetsField();
+  formatSelect.addEventListener("change", syncSetsField);
+  setupForm.addEventListener("submit", (event) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
     const names = [form.get("playerA"), form.get("playerB")].map(normalizeName);

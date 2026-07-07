@@ -1280,3 +1280,6 @@ select {
     grid-template-columns: 1fr;
   }
 }
+.is-hidden {
+  display: none !important;
+}
