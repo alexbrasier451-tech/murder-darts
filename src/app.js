@@ -31,7 +31,6 @@ const DISPLAY_TARGETS = [
   ...TARGETS.filter((target) => target.kind !== "number")
 ];
 const NUMBER_BUTTONS = Array.from({ length: 20 }, (_, index) => 20 - index);
-const QUICK_X01_SCORES = [26, 41, 45, 60, 81, 100, 121, 140, 180];
 const X01_ONE_DART_SCORES = buildOneDartScores();
 const X01_TWO_DART_SCORES = buildTwoDartScores(X01_ONE_DART_SCORES);
 
@@ -432,7 +431,6 @@ function renderX01Setup() {
 }
 function renderX01Match() {
   const activePlayer = x01Match.players[x01Match.activePlayerIndex];
-  const recent = x01Match.history.slice(-5).reverse();
   const latestEntry = x01Match.history[x01Match.history.length - 1] ?? null;
   const activeClass = teamClass(x01Match.activePlayerIndex, "active");
   const resultClass =
@@ -485,6 +483,8 @@ function renderX01Match() {
       ${x01Match.players.map((player, index) => renderX01Stats(player, index)).join("")}
     </section>
 
+    ${renderX01ThrowTable()}
+
     ${
       x01Match.status === "finished"
         ? ""
@@ -509,24 +509,10 @@ function renderX01Match() {
                   : ""
               }
 
-              <div class="quick-score-grid" aria-label="Quick scores">
-                ${QUICK_X01_SCORES.map((score) => `<button type="button" data-x01-score="${score}">${score}</button>`).join("")}
-              </div>
-
               <button class="primary-action" type="submit">Record visit</button>
             </form>
           </section>
         `
-    }
-
-    ${
-      recent.length
-        ? `
-          <section class="history-strip" aria-label="Recent visits">
-            ${recent.map((entry) => renderX01HistoryEntry(entry)).join("")}
-          </section>
-        `
-        : ""
     }
     ${pendingX01Checkout ? renderX01CheckoutDartSheet() : ""}
   `;
@@ -562,6 +548,55 @@ function renderX01Stats(player, index) {
   `;
 }
 
+function renderX01ThrowTable() {
+  const playerEntries = x01Match.players.map((_, playerIndex) =>
+    x01Match.history.filter((entry) => entry.playerIndex === playerIndex).slice(-3).reverse()
+  );
+
+  return `
+    <section class="x01-throw-table" aria-label="Last three visits">
+      <div class="x01-throw-table-head">
+        <p class="eyebrow">League record</p>
+        <h2>Last three visits</h2>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            ${x01Match.players.map((player) => `<th scope="col">${escapeHtml(player.name)}</th>`).join("")}
+          </tr>
+        </thead>
+        <tbody>
+          ${[0, 1, 2]
+            .map(
+              (rowIndex) => `
+                <tr>
+                  ${x01Match.players
+                    .map((_, playerIndex) => renderX01ThrowCell(playerEntries[playerIndex][rowIndex]))
+                    .join("")}
+                </tr>
+              `
+            )
+            .join("")}
+        </tbody>
+      </table>
+    </section>
+  `;
+}
+
+function renderX01ThrowCell(entry) {
+  if (!entry) {
+    return `<td><span class="throw-empty">-</span></td>`;
+  }
+
+  const label = entry.checkout ? `Out ${entry.remainingBefore}` : entry.bust ? "Bust" : entry.countedScore;
+  const meta = entry.checkout ? `${entry.darts} dart${entry.darts === 1 ? "" : "s"}` : `${entry.remainingAfter} left`;
+  return `
+    <td>
+      <strong>${escapeHtml(label)}</strong>
+      <small>${escapeHtml(meta)}</small>
+    </td>
+  `;
+}
 function renderX01MiniPlayer(index) {
   const player = x01Match.players[index];
   return `
@@ -572,16 +607,6 @@ function renderX01MiniPlayer(index) {
       <span>${escapeHtml(player.name)}</span>
       <strong>${player.remaining}</strong>
     </div>
-  `;
-}
-
-function renderX01HistoryEntry(entry) {
-  return `
-    <article class="history-entry ${teamClass(entry.playerIndex, "history")}">
-      <strong>${entry.checkout ? `Out ${entry.remainingBefore}` : entry.bust ? "Bust" : entry.countedScore}</strong>
-      <span>${escapeHtml(entry.playerName)} · ${escapeHtml(entry.message)}</span>
-      <b>${entry.darts} dart${entry.darts === 1 ? "" : "s"}</b>
-    </article>
   `;
 }
 
@@ -731,13 +756,6 @@ function wireMurderEvents() {
   });
 }
 function wireX01Events() {
-  document.querySelectorAll("[data-x01-score]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const input = document.querySelector("#x01-score-input");
-      input.value = button.dataset.x01Score;
-      input.focus();
-    });
-  });
 
   document.querySelectorAll("[data-action='x01-undo']").forEach((button) => {
     button.addEventListener("click", () => {
