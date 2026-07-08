@@ -1,4 +1,4 @@
-export const X01_STORAGE_VERSION = 1;
+export const X01_STORAGE_VERSION = 2;
 
 export const X01_FORMATS = {
   BEST_OF_LEGS: "best-of-legs",
@@ -6,18 +6,21 @@ export const X01_FORMATS = {
   RACE_TO_SETS: "race-to-sets"
 };
 
+const X01_BOGEY_CHECKOUTS = new Set([159, 162, 163, 165, 166, 168, 169]);
+
 export function createX01Match(options = {}) {
   const now = new Date().toISOString();
   const settings = normalizeSettings(options);
 
   return {
     version: X01_STORAGE_VERSION,
+    id: options.id || createId(),
     kind: "x01",
     status: "playing",
     settings,
     players: [
-      createPlayer(options.playerNames?.[0] || "Player 1", settings),
-      createPlayer(options.playerNames?.[1] || "Player 2", settings)
+      createPlayer(options.playerNames?.[0] || "Player 1", settings, options.playerIds?.[0]),
+      createPlayer(options.playerNames?.[1] || "Player 2", settings, options.playerIds?.[1])
     ],
     activePlayerIndex: 0,
     legStarterIndex: 0,
@@ -43,43 +46,39 @@ export function applyX01Visit(match, visit) {
   const player = next.players[next.activePlayerIndex];
   const createdAt = new Date().toISOString();
   const remainingBefore = player.remaining;
+  const wasDoubleInComplete = !next.settings.doubleIn || Boolean(player.doubleInComplete);
   let countedScore = 0;
   let bust = false;
   let checkout = false;
-  let openedDoubleIn = false;
   let message = "";
 
-  if (next.settings.doubleIn && !player.isIn) {
-    if (score > 0 && visit.doubleInHit) {
-      player.isIn = true;
-      openedDoubleIn = true;
-    } else {
-      message = score > 0 ? "No score: double-in required" : "No score";
-    }
+
+  const proposedRemaining = remainingBefore - score;
+
+  const bogeyCheckout = proposedRemaining === 0 && isBogeyCheckout(remainingBefore);
+
+  if (score > remainingBefore || proposedRemaining < 0 || proposedRemaining === 1 || bogeyCheckout) {
+    bust = true;
+    message = bogeyCheckout ? `Bogey ${remainingBefore}` : "Bust";
+  } else if (proposedRemaining === 0) {
+    checkout = true;
+    countedScore = score;
+    player.remaining = 0;
+    player.bestOut = Math.max(Number(player.bestOut || 0), remainingBefore);
+    message = `Checked out ${remainingBefore}`;
+  } else {
+    countedScore = score;
+    player.remaining = proposedRemaining;
+    message = countedScore > 0 ? `Scored ${countedScore}` : "No score";
   }
 
-  if (!next.settings.doubleIn || player.isIn) {
-    const proposedRemaining = remainingBefore - score;
+  const doubleInHit = Boolean(next.settings.doubleIn && !wasDoubleInComplete && countedScore > 0);
 
-    if (score > remainingBefore || proposedRemaining < 0 || proposedRemaining === 1) {
-      bust = true;
-      message = "Bust";
-    } else if (proposedRemaining === 0) {
-      checkout = true;
-      countedScore = score;
-      player.remaining = 0;
-      player.bestOut = Math.max(player.bestOut, remainingBefore);
-      message = `Checked out ${remainingBefore}`;
-    } else {
-      countedScore = score;
-      player.remaining = proposedRemaining;
-      message = countedScore > 0 ? `Scored ${countedScore}` : "No score";
-    }
-  }
-
-  player.totalDarts += darts;
-  player.totalScored += countedScore;
-  player.highestScore = Math.max(player.highestScore, countedScore);
+  player.totalDarts = Number(player.totalDarts || 0) + darts;
+  player.totalScored = Number(player.totalScored || 0) + countedScore;
+  player.highestScore = Math.max(Number(player.highestScore || 0), countedScore);
+  player.doubleInHits = Number(player.doubleInHits || 0) + (doubleInHit ? 1 : 0);
+  player.doubleInComplete = wasDoubleInComplete || doubleInHit;
 
   next.history.push({
     id: createId(),
@@ -88,11 +87,11 @@ export function applyX01Visit(match, visit) {
     score,
     countedScore,
     darts,
+    doubleInHit,
     remainingBefore,
     remainingAfter: player.remaining,
     bust,
     checkout,
-    openedDoubleIn,
     message,
     before,
     createdAt
@@ -126,10 +125,11 @@ export function undoX01Visit(match) {
 
 export function getX01Stats(player) {
   return {
-    darts: player.totalDarts,
+    darts: Number(player.totalDarts || 0),
     average: player.totalDarts ? (player.totalScored / player.totalDarts) * 3 : 0,
-    highestScore: player.highestScore,
-    bestOut: player.bestOut
+    highestScore: Number(player.highestScore || 0),
+    bestOut: Number(player.bestOut || 0),
+    doubleInHits: Number(player.doubleInHits || 0)
   };
 }
 
@@ -182,7 +182,7 @@ function startNextLeg(match) {
 
   match.players.forEach((player) => {
     player.remaining = match.settings.startScore;
-    player.isIn = !match.settings.doubleIn;
+    player.doubleInComplete = !match.settings.doubleIn;
   });
 }
 
@@ -199,17 +199,19 @@ function matchIsWon(match, playerIndex) {
   }
 }
 
-function createPlayer(name, settings) {
+function createPlayer(name, settings, playerId) {
   return {
+    playerId: playerId || null,
     name: normalizeName(name),
     remaining: settings.startScore,
-    isIn: !settings.doubleIn,
     legs: 0,
     sets: 0,
     totalDarts: 0,
     totalScored: 0,
     highestScore: 0,
-    bestOut: 0
+    bestOut: 0,
+    doubleInHits: 0,
+    doubleInComplete: !settings.doubleIn
   };
 }
 
@@ -221,11 +223,15 @@ function normalizeSettings(options) {
 
   return {
     startScore: Number.isInteger(startScore) && startScore > 1 ? startScore : 501,
-    doubleIn: Boolean(options.doubleIn),
     format,
     formatTarget,
-    legsPerSet
+    legsPerSet,
+    doubleIn: Boolean(options.doubleIn)
   };
+}
+
+function isBogeyCheckout(score) {
+  return score > 170 || X01_BOGEY_CHECKOUTS.has(score);
 }
 
 function normalizeName(name) {

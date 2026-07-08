@@ -5,7 +5,7 @@ A mobile-first installable PWA for darts scoring.
 ## Games
 
 - Murder
-- X01, including 301/501/custom starts, optional double-in, best-of legs, race-to legs, and race-to sets
+- X01, including 301/501/custom starts, stats-only inferred double-in tracking, best-of legs, race-to legs, and race-to sets
 
 ## Features
 

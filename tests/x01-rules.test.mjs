@@ -19,17 +19,28 @@ test("scores visits, advances player, and calculates 3 dart average", () => {
   assert.equal(getX01Stats(match.players[0]).average, 100);
 });
 
-test("double-in blocks scoring until a double-in hit is confirmed", () => {
-  let match = createX01Match({ playerNames: ["A", "B"], startScore: 301, doubleIn: true });
 
-  match = applyX01Visit(match, { score: 60, darts: 3, doubleInHit: false });
-  assert.equal(match.players[0].remaining, 301);
-  assert.equal(match.players[0].isIn, false);
-  assert.equal(match.players[0].totalDarts, 3);
+test("double-in marker is inferred from first positive visit in each leg", () => {
+  let match = createX01Match({ playerNames: ["A", "B"], startScore: 501, doubleIn: true });
 
-  match = applyX01Visit(match, { score: 60, darts: 3, doubleInHit: true });
-  assert.equal(match.players[1].remaining, 241);
-  assert.equal(match.players[1].isIn, true);
+  match = applyX01Visit(match, { score: 0, darts: 3 });
+  assert.equal(match.players[0].remaining, 501);
+  assert.equal(match.history[0].doubleInHit, false);
+  assert.equal(getX01Stats(match.players[0]).doubleInHits, 0);
+
+  match = applyX01Visit(match, { score: 45, darts: 3 });
+  assert.equal(match.players[1].remaining, 456);
+  assert.equal(match.history[1].doubleInHit, true);
+  assert.equal(getX01Stats(match.players[1]).doubleInHits, 1);
+
+  match = applyX01Visit(match, { score: 60, darts: 3 });
+  assert.equal(match.players[0].remaining, 441);
+  assert.equal(match.history[2].doubleInHit, true);
+  assert.equal(getX01Stats(match.players[0]).doubleInHits, 1);
+
+  match = applyX01Visit(match, { score: 20, darts: 3 });
+  assert.equal(match.history[3].doubleInHit, false);
+  assert.equal(getX01Stats(match.players[1]).doubleInHits, 1);
 });
 
 test("busts when the score exceeds the remaining total or leaves one", () => {
@@ -62,6 +73,28 @@ test("exact checkout records best out", () => {
   assert.equal(match.status, "finished");
   assert.equal(match.winnerIndex, 0);
   assert.equal(match.players[0].bestOut, 101);
+});
+
+
+test("bogey numbers cannot be checked out", () => {
+  let match = createX01Match({
+    playerNames: ["A", "B"],
+    startScore: 159,
+    format: X01_FORMATS.RACE_TO_LEGS,
+    formatTarget: 1
+  });
+
+  match = applyX01Visit(match, { score: 159, darts: 3 });
+
+  assert.equal(match.status, "playing");
+  assert.equal(match.players[0].remaining, 159);
+  assert.equal(match.players[0].totalDarts, 3);
+  assert.equal(match.players[0].totalScored, 0);
+  assert.equal(match.players[0].bestOut, 0);
+  assert.equal(match.history[0].bust, true);
+  assert.equal(match.history[0].checkout, false);
+  assert.equal(match.history[0].message, "Bogey 159");
+  assert.equal(match.activePlayerIndex, 1);
 });
 
 test("race to sets awards sets and finishes at the target", () => {
