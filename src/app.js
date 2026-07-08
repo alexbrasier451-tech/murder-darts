@@ -8,7 +8,7 @@ import {
   targetIsClosed,
   targetIsOpenFor,
   undoLastDart
-} from "./rules.js?v=23";
+} from "./rules.js?v=24";
 import {
   X01_FORMATS,
   applyX01Visit,
@@ -16,7 +16,7 @@ import {
   getX01Stats,
   getX01TargetLabel,
   undoX01Visit
-} from "./x01-rules.js?v=23";
+} from "./x01-rules.js?v=24";
 
 const MURDER_STORAGE_KEY = "murder-darts-current-match";
 const X01_STORAGE_KEY = "darts-x01-current-match";
@@ -36,6 +36,7 @@ const X01_ONE_DART_SCORES = buildOneDartScores();
 const X01_TWO_DART_SCORES = buildTwoDartScores(X01_ONE_DART_SCORES);
 const X01_STATS_BOGEY_CHECKOUTS = new Set([159, 162, 163, 165, 166, 168, 169]);
 const SPLASH_DURATION_MS = 3000;
+const X01_THROW_TABLE_LIMIT = 5;
 
 const app = document.querySelector("#app");
 
@@ -100,7 +101,7 @@ function renderSplashScreen() {
   app.innerHTML = `
     <section class="splash-screen" aria-label="Darts Night opening screen">
       <div class="splash-art-frame">
-        <img src="./assets/splash-dartboard-cape.webp?v=23" alt="Dartboard with a red superhero cape" fetchpriority="high">
+        <img src="./assets/splash-dartboard-cape.webp?v=24" alt="Dartboard with a red superhero cape" fetchpriority="high">
       </div>
       <div class="splash-title">
         <p class="eyebrow">Darts scorer</p>
@@ -854,14 +855,14 @@ function getCurrentX01LegEntries() {
 function renderX01ThrowTable() {
   const currentLegEntries = getCurrentX01LegEntries();
   const playerEntries = x01Match.players.map((_, playerIndex) =>
-    currentLegEntries.filter((entry) => entry.playerIndex === playerIndex).slice(-3).reverse()
+    currentLegEntries.filter((entry) => entry.playerIndex === playerIndex).slice(-X01_THROW_TABLE_LIMIT).reverse()
   );
 
   return `
-    <section class="x01-throw-table" aria-label="Last three visits">
+    <section class="x01-throw-table" aria-label="Last five throws">
       <div class="x01-throw-table-head">
         <p class="eyebrow">League record</p>
-        <h2>Last three visits</h2>
+        <h2>Last five throws</h2>
       </div>
       <table>
         <thead>
@@ -870,7 +871,7 @@ function renderX01ThrowTable() {
           </tr>
         </thead>
         <tbody>
-          ${[0, 1, 2]
+          ${Array.from({ length: X01_THROW_TABLE_LIMIT }, (_, rowIndex) => rowIndex)
             .map(
               (rowIndex) => `
                 <tr>
