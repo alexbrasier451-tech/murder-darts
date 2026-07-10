@@ -8,7 +8,7 @@ import {
   targetIsClosed,
   targetIsOpenFor,
   undoLastDart
-} from "./rules.js?v=30";
+} from "./rules.js?v=31";
 import {
   X01_FORMATS,
   applyX01Visit,
@@ -16,7 +16,7 @@ import {
   getX01Stats,
   getX01TargetLabel,
   undoX01Visit
-} from "./x01-rules.js?v=30";
+} from "./x01-rules.js?v=31";
 
 const MURDER_STORAGE_KEY = "murder-darts-current-match";
 const X01_STORAGE_KEY = "darts-x01-current-match";
@@ -35,6 +35,7 @@ const NUMBER_BUTTONS = Array.from({ length: 20 }, (_, index) => 20 - index);
 const X01_ONE_DART_SCORES = buildOneDartScores();
 const X01_TWO_DART_SCORES = buildTwoDartScores(X01_ONE_DART_SCORES);
 const X01_STATS_BOGEY_CHECKOUTS = new Set([159, 162, 163, 165, 166, 168, 169]);
+const X01_CHECKOUT_ROUTES = buildX01CheckoutRoutes();
 const SPLASH_DURATION_MS = 3000;
 const X01_THROW_TABLE_LIMIT = 5;
 const X01_STICKY_COMPACT_ON_PX = -8;
@@ -105,7 +106,7 @@ function renderSplashScreen() {
   app.innerHTML = `
     <section class="splash-screen" aria-label="Darts Night opening screen">
       <div class="splash-art-frame">
-        <img src="./assets/splash-dartboard-cape.webp?v=30" alt="Dartboard with a red superhero cape" fetchpriority="high">
+        <img src="./assets/splash-dartboard-cape.webp?v=31" alt="Dartboard with a red superhero cape" fetchpriority="high">
       </div>
       <div class="splash-title">
         <p class="eyebrow">Darts scorer</p>
@@ -683,10 +684,16 @@ function renderX01Setup() {
           <input name="legsPerSet" type="number" inputmode="numeric" min="1" max="11" value="3">
         </label>
       </div>
-      <label class="toggle-field x01-form-wide">
-        <input name="doubleIn" type="checkbox">
-        <span>Double-in marker</span>
-      </label>
+      <div class="x01-toggle-row x01-form-wide">
+        <label class="toggle-field">
+          <input name="doubleIn" type="checkbox">
+          <span>Double-in marker</span>
+        </label>
+        <label class="toggle-field">
+          <input name="outShotAdvice" type="checkbox">
+          <span>Out-shot advice</span>
+        </label>
+      </div>
       <button class="primary-action" type="submit">Start X01</button>
     </form>
   `;
@@ -736,6 +743,7 @@ function renderX01Setup() {
       startScore: customStart > 1 ? customStart : Number(form.get("startScore")),
       format: practice ? X01_FORMATS.RACE_TO_LEGS : form.get("format"),
       doubleIn: form.get("doubleIn") === "on",
+      outShotAdvice: form.get("outShotAdvice") === "on",
       formatTarget: Number(form.get("formatTarget")),
       legsPerSet: Number(form.get("legsPerSet"))
     });
@@ -797,6 +805,7 @@ function renderX01Match() {
         : `
           <section class="input-dock ${activeClass}" aria-label="X01 visit input">
             <form id="x01-visit-form" class="visit-form">
+              ${renderX01OutShotAdvice(activePlayer)}
               <label class="visit-score-field">
                 <span>Visit score</span>
                 <input id="x01-score-input" name="score" type="number" inputmode="numeric" min="0" max="180" autocomplete="off" value="">
@@ -888,6 +897,48 @@ function renderX01Stats(player, index) {
       </dl>
     </article>
   `;
+}
+
+function renderX01OutShotAdvice(player) {
+  if (!x01Match.settings.outShotAdvice) {
+    return "";
+  }
+
+  const advice = getX01OutShotAdvice(player.remaining);
+  return `
+    <section class="x01-out-advice ${advice.route ? "has-route" : ""}" aria-label="Out-shot advice">
+      <span>Out shot</span>
+      <strong>${escapeHtml(advice.title)}</strong>
+      <small>${escapeHtml(advice.detail)}</small>
+    </section>
+  `;
+}
+
+function getX01OutShotAdvice(remaining) {
+  const score = Number(remaining || 0);
+
+  if (score === 0) {
+    return { title: "Leg complete", detail: "Start the next leg", route: null };
+  }
+
+  if (score === 1) {
+    return { title: "No finish", detail: "1 is a bust number", route: null };
+  }
+
+  if (score > 170) {
+    return { title: "No finish", detail: "Leave a checkout under 171", route: null };
+  }
+
+  if (X01_STATS_BOGEY_CHECKOUTS.has(score)) {
+    return { title: `Bogey ${score}`, detail: "Cannot finish in three darts", route: null };
+  }
+
+  const route = X01_CHECKOUT_ROUTES.get(score) || null;
+  if (!route) {
+    return { title: "No finish", detail: "Set up a better leave", route: null };
+  }
+
+  return { title: `${score} out`, detail: route.join(" / "), route };
 }
 
 function getCurrentX01LegEntries() {
@@ -1587,6 +1638,100 @@ function buildTwoDartScores(oneDartScores) {
   });
   return scores;
 }
+
+function buildX01CheckoutRoutes() {
+  const routes = new Map();
+  const scoringDarts = buildX01CheckoutScoringDarts();
+  const finishDarts = buildX01CheckoutFinishDarts();
+
+  finishDarts.forEach((finish) => addX01CheckoutCandidate(routes, finish.value, [finish]));
+
+  scoringDarts.forEach((first) => {
+    finishDarts.forEach((finish) => {
+      addX01CheckoutCandidate(routes, first.value + finish.value, [first, finish]);
+    });
+  });
+
+  scoringDarts.forEach((first) => {
+    scoringDarts.forEach((second) => {
+      finishDarts.forEach((finish) => {
+        addX01CheckoutCandidate(routes, first.value + second.value + finish.value, [first, second, finish]);
+      });
+    });
+  });
+
+  X01_STATS_BOGEY_CHECKOUTS.forEach((score) => routes.delete(score));
+  routes.delete(1);
+
+  const displayRoutes = new Map();
+  routes.forEach((route, score) => {
+    displayRoutes.set(score, route.map((dart) => dart.label));
+  });
+  return displayRoutes;
+}
+
+function buildX01CheckoutScoringDarts() {
+  const darts = [{ label: "25", value: 25, kind: "single", number: 25 }];
+
+  for (let number = 20; number >= 1; number -= 1) {
+    darts.push({ label: `T${number}`, value: number * 3, kind: "treble", number });
+  }
+
+  for (let number = 20; number >= 1; number -= 1) {
+    darts.push({ label: `S${number}`, value: number, kind: "single", number });
+  }
+
+  for (let number = 20; number >= 1; number -= 1) {
+    darts.push({ label: `D${number}`, value: number * 2, kind: "double", number });
+  }
+
+  return darts;
+}
+
+function buildX01CheckoutFinishDarts() {
+  const darts = [];
+  for (let number = 20; number >= 1; number -= 1) {
+    darts.push({ label: `D${number}`, value: number * 2, kind: "finish", number });
+  }
+  darts.push({ label: "Bull", value: 50, kind: "finish", number: 25 });
+  return darts;
+}
+
+function addX01CheckoutCandidate(routes, score, route) {
+  if (score < 2 || score > 170) {
+    return;
+  }
+
+  const existing = routes.get(score);
+  if (!existing || scoreX01CheckoutRoute(route, score) < scoreX01CheckoutRoute(existing, score)) {
+    routes.set(score, route);
+  }
+}
+
+function scoreX01CheckoutRoute(route, score) {
+  const final = route[route.length - 1];
+  const setup = route.slice(0, -1);
+  const finishRank = rankX01Finish(final.label);
+  const setupPenalty = setup.reduce((total, dart, index) => total + rankX01SetupDart(dart, score, index), 0);
+  return route.length * 10000 + finishRank * 30 + setupPenalty;
+}
+
+function rankX01Finish(label) {
+  const preferred = ["D20", "D16", "Bull", "D18", "D12", "D10", "D8", "D6", "D4", "D2", "D1"];
+  const index = preferred.indexOf(label);
+  if (index >= 0) {
+    return index;
+  }
+  return 20 + Math.abs(20 - Number(label.slice(1) || 0));
+}
+
+function rankX01SetupDart(dart, score, index) {
+  const kindPenalty = dart.kind === "treble" ? 0 : dart.kind === "single" ? 18 : 180;
+  const lowScorePenalty = score <= 70 && dart.kind === "treble" ? 60 : 0;
+  const repeatPenalty = index > 0 && dart.kind !== "treble" ? 8 : 0;
+  return kindPenalty + lowScorePenalty + repeatPenalty - dart.value / 3;
+}
+
 function renderStatisticsMenuDetail() {
   const completedMatches = loadX01CompletedMatches().length;
   const suffix = completedMatches === 1 ? "match" : "matches";
@@ -1871,6 +2016,7 @@ function createCompletedX01MatchSummary(match) {
       formatTarget: match.settings.formatTarget,
       legsPerSet: match.settings.legsPerSet,
       doubleIn: Boolean(match.settings.doubleIn),
+      outShotAdvice: Boolean(match.settings.outShotAdvice),
       practice: Boolean(match.settings.practice)
     },
     players: match.players.map((player, index) => {
@@ -1996,6 +2142,7 @@ function ensureX01MatchIdentity(match) {
   match.id ||= createId();
   match.settings ||= {};
   match.settings.doubleIn = Boolean(match.settings.doubleIn);
+  match.settings.outShotAdvice = Boolean(match.settings.outShotAdvice);
   match.settings.practice = Boolean(match.settings.practice || match.players?.length === 1);
   match.history ||= [];
   inferX01DoubleInHistory(match);

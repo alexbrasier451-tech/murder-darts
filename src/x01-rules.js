@@ -1,4 +1,4 @@
-export const X01_STORAGE_VERSION = 3;
+export const X01_STORAGE_VERSION = 4;
 
 export const X01_FORMATS = {
   BEST_OF_LEGS: "best-of-legs",
@@ -235,6 +235,7 @@ function normalizeSettings(options) {
     formatTarget,
     legsPerSet,
     doubleIn: Boolean(options.doubleIn),
+    outShotAdvice: Boolean(options.outShotAdvice),
     practice
   };
 }

@@ -20,6 +20,13 @@ test("scores visits, advances player, and calculates 3 dart average", () => {
   assert.equal(getX01Stats(match.players[0]).average, 100);
 });
 
+test("out-shot advice is an opt-in X01 setting", () => {
+  const defaultMatch = createX01Match({ playerNames: ["A", "B"] });
+  const adviceMatch = createX01Match({ playerNames: ["A", "B"], outShotAdvice: true });
+
+  assert.equal(defaultMatch.settings.outShotAdvice, false);
+  assert.equal(adviceMatch.settings.outShotAdvice, true);
+});
 
 test("double-in marker is inferred from first positive visit in each leg", () => {
   let match = createX01Match({ playerNames: ["A", "B"], startScore: 501, doubleIn: true });
