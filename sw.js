@@ -1,16 +1,16 @@
-const CACHE_NAME = "murder-darts-v35";
+const CACHE_NAME = "murder-darts-v36";
 
 const ASSETS = [
   "./",
   "./index.html",
-  "./styles.css?v=35",
+  "./styles.css?v=36",
   "./manifest.webmanifest",
   "./assets/icon.svg",
   "./assets/icon-maskable.svg",
-  "./assets/splash-dartboard-cape.webp?v=35",
-  "./src/app.js?v=35",
-  "./src/rules.js?v=35",
-  "./src/x01-rules.js?v=35"
+  "./assets/splash-dartboard-cape.webp?v=36",
+  "./src/app.js?v=36",
+  "./src/rules.js?v=36",
+  "./src/x01-rules.js?v=36"
 ];
 
 self.addEventListener("install", (event) => {

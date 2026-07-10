@@ -837,14 +837,17 @@ button:disabled {
 .lex-tone-low-giggity .lex-graphic-card::after,
 .lex-tone-high-giggity .lex-graphic-card::after {
   background:
-    radial-gradient(ellipse at 27% 28%, rgb(255 255 255 / 0.18) 0 18%, transparent 19%),
-    linear-gradient(42deg, transparent 0 27%, rgb(255 255 255 / 0.16) 28% 32%, transparent 33%),
-    radial-gradient(ellipse at 68% 34%, rgb(255 222 182 / 0.24) 0 16%, transparent 17%),
-    radial-gradient(ellipse at 71% 49%, rgb(255 222 182 / 0.19) 0 18%, transparent 19%),
-    radial-gradient(circle at 63% 31%, rgb(12 13 14 / 0.36) 0 2.1%, transparent 2.4%),
-    radial-gradient(circle at 74% 31%, rgb(12 13 14 / 0.36) 0 2.1%, transparent 2.4%),
-    linear-gradient(150deg, transparent 0 57%, rgb(184 39 43 / 0.45) 58% 80%, transparent 81%),
-    linear-gradient(30deg, transparent 0 60%, rgb(245 211 84 / 0.28) 61% 67%, transparent 68%),
+    radial-gradient(circle at 69% 34%, rgb(12 13 14 / 0.42) 0 1.5%, transparent 1.8%),
+    radial-gradient(circle at 79% 34%, rgb(12 13 14 / 0.42) 0 1.5%, transparent 1.8%),
+    radial-gradient(ellipse at 83% 43%, rgb(255 222 182 / 0.29) 0 6%, transparent 6.6%),
+    linear-gradient(0deg, transparent 47%, rgb(12 13 14 / 0.26) 48% 49%, transparent 50%),
+    radial-gradient(ellipse at 74% 56%, rgb(255 222 182 / 0.23) 0 22%, transparent 23%),
+    radial-gradient(ellipse at 73% 35%, rgb(255 222 182 / 0.27) 0 18%, transparent 19%),
+    radial-gradient(ellipse at 65% 25%, rgb(18 18 17 / 0.26) 0 10%, transparent 11%),
+    radial-gradient(ellipse at 27% 27%, rgb(255 255 255 / 0.21) 0 18%, transparent 19%),
+    linear-gradient(38deg, transparent 0 25%, rgb(255 255 255 / 0.17) 26% 31%, transparent 32%),
+    linear-gradient(150deg, transparent 0 55%, rgb(184 39 43 / 0.54) 56% 82%, transparent 83%),
+    linear-gradient(32deg, transparent 0 59%, rgb(245 211 84 / 0.38) 60% 66%, transparent 67%),
     repeating-radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--lex-c) 18%, transparent) 0 2px, transparent 3px 20px);
 }
 
