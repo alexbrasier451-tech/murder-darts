@@ -1,24 +1,26 @@
-const CACHE_NAME = "murder-darts-v42";
+const CACHE_NAME = "murder-darts-v43";
 
 const ASSETS = [
   "./",
   "./index.html",
-  "./styles.css?v=42",
+  "./styles.css?v=43",
   "./manifest.webmanifest",
   "./assets/icon.svg",
   "./assets/icon-maskable.svg",
-  "./assets/splash-dartboard-cape.webp?v=42",
-  "./assets/lex/camera-180.svg?v=42",
-  "./assets/lex/darts-great.svg?v=42",
-  "./assets/lex/hundred-caller.svg?v=42",
-  "./assets/lex/irish-33.svg?v=42",
-  "./assets/lex/lounge-legend.svg?v=42",
-  "./assets/lex/lex-corp-activation.svg?v=42",
-  "./assets/lex/puppet-crisis.svg?v=42",
-  "./assets/lex/wicked-bass.svg?v=42",
-  "./src/app.js?v=42",
-  "./src/rules.js?v=42",
-  "./src/x01-rules.js?v=42"
+  "./assets/splash-dartboard-cape.webp?v=43",
+  "./assets/lex/camera-180.svg?v=43",
+  "./assets/lex/darts-great.svg?v=43",
+  "./assets/lex/hundred-caller.svg?v=43",
+  "./assets/lex/irish-33.svg?v=43",
+  "./assets/lex/lounge-legend.svg?v=43",
+  "./assets/lex/lounge-ecstatic.svg?v=43",
+  "./assets/lex/lounge-sad.svg?v=43",
+  "./assets/lex/lex-corp-activation.svg?v=43",
+  "./assets/lex/puppet-crisis.svg?v=43",
+  "./assets/lex/wicked-bass.svg?v=43",
+  "./src/app.js?v=43",
+  "./src/rules.js?v=43",
+  "./src/x01-rules.js?v=43"
 ];
 
 self.addEventListener("install", (event) => {

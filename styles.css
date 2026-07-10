@@ -1169,7 +1169,7 @@ button:disabled {
 }
 
 .lex-tone-high-giggity .lex-scene-art {
-  filter: saturate(1.55) contrast(1.16) hue-rotate(10deg);
+  filter: saturate(0.78) contrast(1.04) grayscale(0.16) brightness(0.88);
 }
 
 @media (max-width: 520px) {

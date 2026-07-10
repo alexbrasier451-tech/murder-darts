@@ -8,7 +8,7 @@ import {
   targetIsClosed,
   targetIsOpenFor,
   undoLastDart
-} from "./rules.js?v=42";
+} from "./rules.js?v=43";
 import {
   X01_FORMATS,
   applyX01Visit,
@@ -16,7 +16,7 @@ import {
   getX01Stats,
   getX01TargetLabel,
   undoX01Visit
-} from "./x01-rules.js?v=42";
+} from "./x01-rules.js?v=43";
 
 const MURDER_STORAGE_KEY = "murder-darts-current-match";
 const X01_STORAGE_KEY = "darts-x01-current-match";
@@ -114,7 +114,7 @@ function renderSplashScreen() {
   app.innerHTML = `
     <section class="splash-screen" aria-label="Darts Night opening screen">
       <div class="splash-art-frame">
-        <img src="./assets/splash-dartboard-cape.webp?v=42" alt="Dartboard with a red superhero cape" fetchpriority="high">
+        <img src="./assets/splash-dartboard-cape.webp?v=43" alt="Dartboard with a red superhero cape" fetchpriority="high">
       </div>
       <div class="splash-title">
         <p class="eyebrow">Darts scorer</p>
@@ -1443,7 +1443,7 @@ function showLexModeStatus(enabled) {
     "<div class=\"lex-corp-burst\" aria-hidden=\"true\"></div>",
     "<section class=\"lex-corp-popup\">",
     "<div class=\"lex-corp-scene\" aria-hidden=\"true\">",
-    "<img src=\"./assets/lex/lex-corp-activation.svg?v=42\" alt=\"\">",
+    "<img src=\"./assets/lex/lex-corp-activation.svg?v=43\" alt=\"\">",
     "</div>",
     "<div class=\"lex-corp-copy\">",
     "<span>Lex Corp</span>",
@@ -1545,15 +1545,15 @@ function getLexGraphic(score) {
   }
 
   if (score === 69) {
-    return { tone: "giggity", scene: "lounge", title: "All the Giggity", caption: "69 scored", kicker: "Animated lounge legend", art: "69" };
+    return { tone: "giggity", scene: "lounge-ecstatic", title: "All the Giggity", caption: "69 scored", kicker: "Animated lounge legend", art: "69" };
   }
 
   if (score === 59) {
-    return { tone: "low-giggity", scene: "lounge", title: "Not enough Giggity", caption: "59 scored", kicker: "Animated lounge legend", art: "59" };
+    return { tone: "low-giggity", scene: "lounge-sad", title: "Not enough Giggity", caption: "59 scored", kicker: "Animated lounge legend", art: "59" };
   }
 
   if (score === 79) {
-    return { tone: "high-giggity", scene: "lounge", title: "Too much Giggity", caption: "79 scored", kicker: "Animated lounge legend", art: "79" };
+    return { tone: "high-giggity", scene: "lounge-sad", title: "Too much Giggity", caption: "79 scored", kicker: "Animated lounge legend", art: "79" };
   }
 
   if (score === 33) {
@@ -1580,7 +1580,7 @@ function showLexGraphic(graphic) {
     "<div class=\"lex-burst\" aria-hidden=\"true\"></div>",
     "<section class=\"lex-graphic-card\" data-art=\"" + escapeHtml(graphic.art || "") + "\">",
     "<div class=\"lex-scene lex-scene-" + escapeHtml(scene) + "\" aria-hidden=\"true\">",
-    "<img class=\"lex-scene-art\" src=\"./assets/lex/" + lexSceneAsset(scene) + ".svg?v=42\" alt=\"\">",
+    "<img class=\"lex-scene-art\" src=\"./assets/lex/" + lexSceneAsset(scene) + ".svg?v=43\" alt=\"\">",
     "</div>",
     "<div class=\"lex-copy\">",
     "<span>" + escapeHtml(graphic.kicker) + "</span>",
@@ -1601,6 +1601,10 @@ function lexSceneAsset(scene) {
       return "puppet-crisis";
     case "lounge":
       return "lounge-legend";
+    case "lounge-ecstatic":
+      return "lounge-ecstatic";
+    case "lounge-sad":
+      return "lounge-sad";
     case "irish":
       return "irish-33";
     case "camera":
@@ -2644,7 +2648,7 @@ function registerServiceWorker() {
 
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("./sw.js?v=42", { updateViaCache: "none" })
+      .register("./sw.js?v=43", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch(() => {});
   });

@@ -1,0 +1,40 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" role="img" aria-label="Original cartoon lounge legend looking ecstatic under neon lights">
+  <defs>
+    <radialGradient id="bg" cx="52%" cy="38%" r="76%"><stop offset="0" stop-color="#b93558"/><stop offset="0.42" stop-color="#3b1530"/><stop offset="1" stop-color="#060409"/></radialGradient>
+    <linearGradient id="skin" x1="0" x2="1"><stop stop-color="#ffd8ad"/><stop offset="1" stop-color="#f0a06c"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="shadow"><feDropShadow dx="0" dy="10" stdDeviation="7" flood-color="#000" flood-opacity="0.55"/></filter>
+  </defs>
+  <rect width="900" height="620" fill="url(#bg)"/>
+  <g opacity="0.42">
+    <circle cx="122" cy="92" r="58" fill="#ffd34f"/><circle cx="754" cy="82" r="46" fill="#47d7ff"/><circle cx="786" cy="454" r="86" fill="#ff5ba7"/>
+    <path d="M0 458c132-54 266-56 398-7s267 51 502-20v189H0z" fill="#08080b"/>
+    <path d="M0 424h900" stroke="#ffd34f" stroke-width="9"/>
+  </g>
+  <g filter="url(#glow)">
+    <rect x="42" y="44" width="336" height="116" rx="22" fill="#111" stroke="#ffd34f" stroke-width="8"/>
+    <text x="210" y="118" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="48" fill="#ffd34f">GIGGITY!!!</text>
+  </g>
+  <g opacity="0.38" stroke="#fff3a2" stroke-width="5">
+    <path d="M450 12v190M348 32l72 176M552 32l-72 176M245 96l140 128M655 96L515 224"/>
+  </g>
+  <g transform="translate(430 64)" filter="url(#shadow)">
+    <path d="M-96 330c-8-108 72-194 182-202 128-9 222 82 220 202l38 192h-482z" fill="#b42131" stroke="#110406" stroke-width="10"/>
+    <path d="M-48 346c-42 46-67 104-76 176h92c10-72 36-122 80-150z" fill="#f7f2e9" opacity="0.94"/>
+    <path d="M200 344c52 34 84 92 98 178h94c-10-88-39-154-91-202z" fill="#f7f2e9" opacity="0.94"/>
+    <path d="M66 14C-8 14-66 72-66 158c0 104 72 178 174 178 90 0 154-64 154-153C262 80 178 14 66 14z" fill="url(#skin)" stroke="#2b120d" stroke-width="10"/>
+    <path d="M-54 98c28-91 146-128 254-56-60-6-121 8-186 44z" fill="#2b1a10" stroke="#2b120d" stroke-width="9"/>
+    <path d="M182 66c58 30 92 88 90 146 23-46 11-110-30-154z" fill="#2b1a10"/>
+    <ellipse cx="18" cy="148" rx="25" ry="31" fill="#fff"/><ellipse cx="140" cy="150" rx="25" ry="31" fill="#fff"/>
+    <circle cx="27" cy="158" r="9" fill="#111"/><circle cx="149" cy="160" r="9" fill="#111"/>
+    <path d="M26 218c42 72 142 72 194-2-10 93-177 100-194 2z" fill="#fff" stroke="#4b160f" stroke-width="9"/>
+    <path d="M25 216c62 28 134 27 203-3" stroke="#4b160f" stroke-width="7" fill="none"/>
+    <path d="M-116 350l-130-120M310 348l132-126" stroke="#ffd2a6" stroke-width="36" stroke-linecap="round"/>
+    <circle cx="-252" cy="226" r="25" fill="#ffd2a6"/><circle cx="448" cy="218" r="25" fill="#ffd2a6"/>
+  </g>
+  <g filter="url(#glow)">
+    <path d="M129 502c120-86 242-92 366-18s238 70 364-28" fill="none" stroke="#ffd34f" stroke-width="13" opacity="0.78"/>
+    <path d="M118 536c150-58 286-54 410 12s218 40 312-28" fill="none" stroke="#47d7ff" stroke-width="8" opacity="0.7"/>
+  </g>
+  <text x="450" y="578" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="58" fill="#ffd34f" stroke="#13070b" stroke-width="10" paint-order="stroke">ABSOLUTE GIGGITY</text>
+</svg>
