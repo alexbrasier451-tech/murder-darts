@@ -8,7 +8,7 @@ import {
   targetIsClosed,
   targetIsOpenFor,
   undoLastDart
-} from "./rules.js?v=25";
+} from "./rules.js?v=26";
 import {
   X01_FORMATS,
   applyX01Visit,
@@ -16,7 +16,7 @@ import {
   getX01Stats,
   getX01TargetLabel,
   undoX01Visit
-} from "./x01-rules.js?v=25";
+} from "./x01-rules.js?v=26";
 
 const MURDER_STORAGE_KEY = "murder-darts-current-match";
 const X01_STORAGE_KEY = "darts-x01-current-match";
@@ -101,7 +101,7 @@ function renderSplashScreen() {
   app.innerHTML = `
     <section class="splash-screen" aria-label="Darts Night opening screen">
       <div class="splash-art-frame">
-        <img src="./assets/splash-dartboard-cape.webp?v=25" alt="Dartboard with a red superhero cape" fetchpriority="high">
+        <img src="./assets/splash-dartboard-cape.webp?v=26" alt="Dartboard with a red superhero cape" fetchpriority="high">
       </div>
       <div class="splash-title">
         <p class="eyebrow">Darts scorer</p>
@@ -466,15 +466,8 @@ function renderMurderSetup() {
     ])}
 
     <form id="murder-setup-form" class="setup-form">
-      ${renderPlayerDatalist()}
-      <label>
-        <span>Team A</span>
-        <input name="teamA" list="stored-players" autocomplete="off" maxlength="32" value="${escapeHtml(players[0]?.name || "Team A")}">
-      </label>
-      <label>
-        <span>Team B</span>
-        <input name="teamB" list="stored-players" autocomplete="off" maxlength="32" value="${escapeHtml(players[1]?.name || "Team B")}">
-      </label>
+      ${renderPlayerSelectField("teamA", "Team A", players[0]?.name || "Team A")}
+      ${renderPlayerSelectField("teamB", "Team B", players[1]?.name || "Team B")}
       <button class="primary-action" type="submit">Start Murder</button>
     </form>
   `;
@@ -647,16 +640,9 @@ function renderX01Setup() {
     ])}
 
     <form id="x01-setup-form" class="setup-form">
-      ${renderPlayerDatalist()}
       <div class="form-grid">
-        <label>
-          <span>Player 1</span>
-          <input name="playerA" list="stored-players" autocomplete="off" maxlength="32" value="${escapeHtml(players[0]?.name || "Player 1")}">
-        </label>
-        <label>
-          <span>Player 2</span>
-          <input name="playerB" list="stored-players" autocomplete="off" maxlength="32" value="${escapeHtml(players[1]?.name || "Player 2")}">
-        </label>
+        ${renderPlayerSelectField("playerA", "Player 1", players[0]?.name || "Player 1")}
+        ${renderPlayerSelectField("playerB", "Player 2", players[1]?.name || "Player 2")}
         <label>
           <span>X01 start</span>
           <select name="startScore">
@@ -1325,12 +1311,34 @@ function renderTopbar(title, eyebrow, actions) {
   `;
 }
 
-function renderPlayerDatalist() {
+function renderPlayerSelectField(name, label, selectedName) {
+  const options = playerSelectionNames(selectedName);
+  const selected = normalizeName(selectedName);
+
   return `
-    <datalist id="stored-players">
-      ${players.map((player) => `<option value="${escapeHtml(player.name)}"></option>`).join("")}
-    </datalist>
+    <label>
+      <span>${escapeHtml(label)}</span>
+      <select name="${escapeHtml(name)}">
+        ${options
+          .map(
+            (option) => `
+              <option value="${escapeHtml(option)}" ${option === selected ? "selected" : ""}>
+                ${escapeHtml(option)}
+              </option>
+            `
+          )
+          .join("")}
+      </select>
+    </label>
   `;
+}
+
+function playerSelectionNames(selectedName) {
+  const names = Array.from(new Set(players.map((player) => normalizeName(player.name))));
+  if (!names.length) {
+    return [normalizeName(selectedName)];
+  }
+  return names;
 }
 
 function activeName(match) {
