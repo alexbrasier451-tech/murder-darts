@@ -8,7 +8,7 @@ import {
   targetIsClosed,
   targetIsOpenFor,
   undoLastDart
-} from "./rules.js?v=37";
+} from "./rules.js?v=38";
 import {
   X01_FORMATS,
   applyX01Visit,
@@ -16,7 +16,7 @@ import {
   getX01Stats,
   getX01TargetLabel,
   undoX01Visit
-} from "./x01-rules.js?v=37";
+} from "./x01-rules.js?v=38";
 
 const MURDER_STORAGE_KEY = "murder-darts-current-match";
 const X01_STORAGE_KEY = "darts-x01-current-match";
@@ -43,6 +43,7 @@ const X01_STICKY_COMPACT_ON_PX = -8;
 const X01_STICKY_COMPACT_OFF_PX = 18;
 const LEX_GRAPHIC_DURATION_MS = 2800;
 const LEX_DOUBLE_TAP_MS = 420;
+const LEX_STATUS_DURATION_MS = 2400;
 
 const app = document.querySelector("#app");
 
@@ -62,6 +63,7 @@ let x01StatsCollapsed = false;
 let lexModeEnabled = loadLexMode();
 let lexGraphicTimer = null;
 let lastLexIconTapAt = 0;
+let lexStatusTimer = null;
 
 if (x01Match) {
   ensureX01MatchIdentity(x01Match);
@@ -112,7 +114,7 @@ function renderSplashScreen() {
   app.innerHTML = `
     <section class="splash-screen" aria-label="Darts Night opening screen">
       <div class="splash-art-frame">
-        <img src="./assets/splash-dartboard-cape.webp?v=37" alt="Dartboard with a red superhero cape" fetchpriority="high">
+        <img src="./assets/splash-dartboard-cape.webp?v=38" alt="Dartboard with a red superhero cape" fetchpriority="high">
       </div>
       <div class="splash-title">
         <p class="eyebrow">Darts scorer</p>
@@ -1421,8 +1423,46 @@ function recordX01Visit(visit) {
 function toggleLexMode() {
   lexModeEnabled = !lexModeEnabled;
   saveLexMode();
-  alert(lexModeEnabled ? "Lex mode activated." : "Lex mode deactivated.");
   render();
+  showLexModeStatus(lexModeEnabled);
+}
+
+function showLexModeStatus(enabled) {
+  document.querySelectorAll(".lex-corp-status").forEach((element) => element.remove());
+
+  if (lexStatusTimer) {
+    window.clearTimeout(lexStatusTimer);
+    lexStatusTimer = null;
+  }
+
+  const status = document.createElement("div");
+  status.className = "lex-corp-status" + (enabled ? " is-active" : " is-inactive");
+  status.setAttribute("role", "status");
+  status.setAttribute("aria-live", "polite");
+  status.innerHTML = [
+    "<section class=\"lex-corp-banner\">",
+    "<div class=\"lex-corp-sigil\" aria-hidden=\"true\">Lex</div>",
+    "<div class=\"lex-corp-copy\">",
+    "<span>Lex Corp</span>",
+    "<strong>Lex mode " + (enabled ? "activated" : "deactivated") + ".</strong>",
+    "<small>Private darts division</small>",
+    "</div>",
+    "</section>"
+  ].join("");
+
+  status.addEventListener("click", () => dismissLexModeStatus(status));
+  document.body.appendChild(status);
+  lexStatusTimer = window.setTimeout(() => dismissLexModeStatus(status), LEX_STATUS_DURATION_MS);
+}
+
+function dismissLexModeStatus(status) {
+  if (lexStatusTimer) {
+    window.clearTimeout(lexStatusTimer);
+    lexStatusTimer = null;
+  }
+
+  status.classList.add("is-leaving");
+  window.setTimeout(() => status.remove(), 220);
 }
 
 function loadLexMode() {
