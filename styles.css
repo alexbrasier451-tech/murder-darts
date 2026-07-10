@@ -1758,7 +1758,9 @@ select {
   gap: 7px;
   margin: 0 -4px 12px;
   padding: 8px;
-  transition: padding 160ms ease, gap 160ms ease, box-shadow 160ms ease;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  transition: box-shadow 160ms ease;
 }
 
 .x01-mini-team {
@@ -1767,7 +1769,6 @@ select {
   min-height: 82px;
   gap: 5px 8px;
   padding: 10px;
-  transition: min-height 160ms ease, padding 160ms ease;
 }
 
 .x01-mini-team.team-a-mini {
@@ -1800,7 +1801,6 @@ select {
   color: var(--text);
   font-size: clamp(2.15rem, 10vw, 3.2rem);
   line-height: 0.88;
-  transition: font-size 160ms ease;
 }
 
 .x01-mini-team small {

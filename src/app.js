@@ -8,7 +8,7 @@ import {
   targetIsClosed,
   targetIsOpenFor,
   undoLastDart
-} from "./rules.js?v=27";
+} from "./rules.js?v=28";
 import {
   X01_FORMATS,
   applyX01Visit,
@@ -16,7 +16,7 @@ import {
   getX01Stats,
   getX01TargetLabel,
   undoX01Visit
-} from "./x01-rules.js?v=27";
+} from "./x01-rules.js?v=28";
 
 const MURDER_STORAGE_KEY = "murder-darts-current-match";
 const X01_STORAGE_KEY = "darts-x01-current-match";
@@ -37,6 +37,8 @@ const X01_TWO_DART_SCORES = buildTwoDartScores(X01_ONE_DART_SCORES);
 const X01_STATS_BOGEY_CHECKOUTS = new Set([159, 162, 163, 165, 166, 168, 169]);
 const SPLASH_DURATION_MS = 3000;
 const X01_THROW_TABLE_LIMIT = 5;
+const X01_STICKY_COMPACT_ON_PX = -8;
+const X01_STICKY_COMPACT_OFF_PX = 18;
 
 const app = document.querySelector("#app");
 
@@ -101,7 +103,7 @@ function renderSplashScreen() {
   app.innerHTML = `
     <section class="splash-screen" aria-label="Darts Night opening screen">
       <div class="splash-art-frame">
-        <img src="./assets/splash-dartboard-cape.webp?v=27" alt="Dartboard with a red superhero cape" fetchpriority="high">
+        <img src="./assets/splash-dartboard-cape.webp?v=28" alt="Dartboard with a red superhero cape" fetchpriority="high">
       </div>
       <div class="splash-title">
         <p class="eyebrow">Darts scorer</p>
@@ -915,17 +917,46 @@ function wireX01StickyScoreStrip() {
     return;
   }
 
-  const syncCompactState = () => {
-    strip.classList.toggle("is-compact", sentinel.getBoundingClientRect().bottom <= 0);
+  let compact = strip.classList.contains("is-compact");
+  let animationFrame = null;
+
+  const setCompactState = (nextCompact) => {
+    if (compact === nextCompact) {
+      return;
+    }
+
+    compact = nextCompact;
+    strip.classList.toggle("is-compact", compact);
   };
 
-  window.addEventListener("scroll", syncCompactState, { passive: true });
-  window.addEventListener("resize", syncCompactState);
+  const syncCompactState = () => {
+    animationFrame = null;
+    const sentinelBottom = sentinel.getBoundingClientRect().bottom;
+
+    if (!compact && sentinelBottom <= X01_STICKY_COMPACT_ON_PX) {
+      setCompactState(true);
+    } else if (compact && sentinelBottom >= X01_STICKY_COMPACT_OFF_PX) {
+      setCompactState(false);
+    }
+  };
+
+  const requestCompactSync = () => {
+    if (animationFrame !== null) {
+      return;
+    }
+    animationFrame = window.requestAnimationFrame(syncCompactState);
+  };
+
+  window.addEventListener("scroll", requestCompactSync, { passive: true });
+  window.addEventListener("resize", requestCompactSync);
   syncCompactState();
 
   cleanupX01StickyScoreStrip = () => {
-    window.removeEventListener("scroll", syncCompactState);
-    window.removeEventListener("resize", syncCompactState);
+    window.removeEventListener("scroll", requestCompactSync);
+    window.removeEventListener("resize", requestCompactSync);
+    if (animationFrame !== null) {
+      window.cancelAnimationFrame(animationFrame);
+    }
   };
 }
 
