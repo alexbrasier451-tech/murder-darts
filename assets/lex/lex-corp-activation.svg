@@ -1,0 +1,67 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" role="img" aria-label="Lex Corp comic style activation scene with a bald corporate mastermind">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="38%" r="72%">
+      <stop offset="0" stop-color="#174f3a"/>
+      <stop offset="0.48" stop-color="#0c1715"/>
+      <stop offset="1" stop-color="#050706"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" x2="1">
+      <stop stop-color="#fff2a8"/>
+      <stop offset="0.42" stop-color="#e2b542"/>
+      <stop offset="1" stop-color="#7a5717"/>
+    </linearGradient>
+    <linearGradient id="skin" x1="0" x2="1">
+      <stop stop-color="#ffd6ad"/>
+      <stop offset="1" stop-color="#e39768"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="7" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="hardShadow">
+      <feDropShadow dx="0" dy="10" stdDeviation="6" flood-color="#000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+  <rect width="900" height="620" fill="url(#bg)"/>
+  <g opacity="0.28" stroke="#e2b542" stroke-width="3">
+    <path d="M0 112h900M0 224h900M0 336h900M0 448h900M0 560h900M112 0v620M224 0v620M336 0v620M448 0v620M560 0v620M672 0v620M784 0v620"/>
+    <circle cx="450" cy="312" r="260" fill="none"/>
+    <circle cx="450" cy="312" r="188" fill="none"/>
+    <circle cx="450" cy="312" r="112" fill="none"/>
+  </g>
+  <g opacity="0.55">
+    <path d="M0 428h78v192H0zM94 354h92v266H94zM204 392h68v228h-68zM634 340h94v280h-94zM746 392h70v228h-70zM836 318h64v302h-64z" fill="#08100f"/>
+    <path d="M112 386h52M112 424h52M112 462h52M654 376h52M654 416h52M654 456h52M854 360h30M854 404h30" stroke="#38c286" stroke-width="7" opacity="0.55"/>
+  </g>
+  <g filter="url(#glow)">
+    <path d="M450 42l48 122 132 9-102 84 32 129-110-70-110 70 32-129-102-84 132-9z" fill="#173927" stroke="url(#gold)" stroke-width="12" opacity="0.98"/>
+    <circle cx="450" cy="226" r="168" fill="none" stroke="url(#gold)" stroke-width="13" opacity="0.78"/>
+    <circle cx="450" cy="226" r="116" fill="none" stroke="#38c286" stroke-width="8" opacity="0.66"/>
+  </g>
+  <g transform="translate(118 64)" filter="url(#hardShadow)">
+    <path d="M0 26h664c36 0 62 26 62 62v86c0 35-26 62-62 62H0z" fill="#080b0a" stroke="url(#gold)" stroke-width="10"/>
+    <path d="M24 48h616c29 0 52 22 52 52v50c0 29-23 52-52 52H24z" fill="#0f261d"/>
+    <text x="362" y="146" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="92" fill="url(#gold)" stroke="#020303" stroke-width="9" paint-order="stroke">Lex Corp</text>
+    <text x="366" y="193" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="28" fill="#f7f2e9" opacity="0.92">PRIVATE DARTS DIVISION</text>
+  </g>
+  <g transform="translate(300 206)" filter="url(#glow)">
+    <path d="M72 262c18-94 85-152 178-152s161 58 178 152l31 150H42z" fill="#191f1c" stroke="#050606" stroke-width="11"/>
+    <path d="M118 288h264l44 124H72z" fill="#2a312e"/>
+    <path d="M170 284l82 96 80-96z" fill="#f7f2e9" opacity="0.96"/>
+    <path d="M202 296l50 58 48-58" fill="#173927" stroke="url(#gold)" stroke-width="8"/>
+    <circle cx="252" cy="132" r="112" fill="url(#skin)" stroke="#2a120d" stroke-width="11"/>
+    <path d="M152 118c18-88 98-132 188-92-40 12-81 38-111 78z" fill="#f7f2e9" opacity="0.16"/>
+    <path d="M174 142c22-18 54-18 76 0M284 142c24-17 55-17 78 2" fill="none" stroke="#3a160f" stroke-width="10" stroke-linecap="round"/>
+    <circle cx="212" cy="166" r="10" fill="#111"/>
+    <circle cx="318" cy="166" r="10" fill="#111"/>
+    <path d="M222 224c34 22 76 22 112-2" fill="none" stroke="#591c12" stroke-width="10" stroke-linecap="round"/>
+    <path d="M136 316l-132 82M368 316l132 82" stroke="#ffd6ad" stroke-width="34" stroke-linecap="round"/>
+    <circle cx="-4" cy="402" r="25" fill="#ffd6ad"/>
+    <circle cx="508" cy="402" r="25" fill="#ffd6ad"/>
+  </g>
+  <g filter="url(#glow)">
+    <path d="M101 508c112-92 218-106 318-42 93 60 206 53 380-50" fill="none" stroke="#38c286" stroke-width="18" opacity="0.45"/>
+    <path d="M89 534c154-72 281-72 380 0s213 62 350-36" fill="none" stroke="#e2b542" stroke-width="9" opacity="0.58"/>
+  </g>
+  <text x="450" y="586" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="48" fill="#f7f2e9" stroke="#050606" stroke-width="10" paint-order="stroke">LEX MODE ACTIVATED</text>
+</svg>
