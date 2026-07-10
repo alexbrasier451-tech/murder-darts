@@ -8,7 +8,7 @@ import {
   targetIsClosed,
   targetIsOpenFor,
   undoLastDart
-} from "./rules.js?v=34";
+} from "./rules.js?v=35";
 import {
   X01_FORMATS,
   applyX01Visit,
@@ -16,7 +16,7 @@ import {
   getX01Stats,
   getX01TargetLabel,
   undoX01Visit
-} from "./x01-rules.js?v=34";
+} from "./x01-rules.js?v=35";
 
 const MURDER_STORAGE_KEY = "murder-darts-current-match";
 const X01_STORAGE_KEY = "darts-x01-current-match";
@@ -112,7 +112,7 @@ function renderSplashScreen() {
   app.innerHTML = `
     <section class="splash-screen" aria-label="Darts Night opening screen">
       <div class="splash-art-frame">
-        <img src="./assets/splash-dartboard-cape.webp?v=34" alt="Dartboard with a red superhero cape" fetchpriority="high">
+        <img src="./assets/splash-dartboard-cape.webp?v=35" alt="Dartboard with a red superhero cape" fetchpriority="high">
       </div>
       <div class="splash-title">
         <p class="eyebrow">Darts scorer</p>

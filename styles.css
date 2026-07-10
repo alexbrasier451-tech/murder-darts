@@ -785,14 +785,14 @@ button:disabled {
 .lex-tone-low-giggity,
 .lex-tone-high-giggity {
   --lex-a: #f0c95a;
-  --lex-b: #ff5ba7;
-  --lex-c: #38c286;
+  --lex-b: #ef6b61;
+  --lex-c: #4fb3ff;
 }
 
 .lex-tone-tirty-tree {
   --lex-a: #f0c95a;
-  --lex-b: #ef6b61;
-  --lex-c: #b78cff;
+  --lex-b: #169b62;
+  --lex-c: #ff883e;
 }
 
 .lex-tone-choice .lex-graphic-card::after {
@@ -837,9 +837,15 @@ button:disabled {
 .lex-tone-low-giggity .lex-graphic-card::after,
 .lex-tone-high-giggity .lex-graphic-card::after {
   background:
-    radial-gradient(ellipse at 25% 48%, transparent 0 15%, color-mix(in srgb, var(--lex-a) 46%, transparent) 16% 18%, transparent 19%),
-    radial-gradient(ellipse at 72% 48%, transparent 0 15%, color-mix(in srgb, var(--lex-b) 44%, transparent) 16% 18%, transparent 19%),
-    repeating-linear-gradient(112deg, transparent 0 16px, color-mix(in srgb, var(--lex-c) 21%, transparent) 17px 21px);
+    radial-gradient(ellipse at 27% 28%, rgb(255 255 255 / 0.18) 0 18%, transparent 19%),
+    linear-gradient(42deg, transparent 0 27%, rgb(255 255 255 / 0.16) 28% 32%, transparent 33%),
+    radial-gradient(ellipse at 68% 34%, rgb(255 222 182 / 0.24) 0 16%, transparent 17%),
+    radial-gradient(ellipse at 71% 49%, rgb(255 222 182 / 0.19) 0 18%, transparent 19%),
+    radial-gradient(circle at 63% 31%, rgb(12 13 14 / 0.36) 0 2.1%, transparent 2.4%),
+    radial-gradient(circle at 74% 31%, rgb(12 13 14 / 0.36) 0 2.1%, transparent 2.4%),
+    linear-gradient(150deg, transparent 0 57%, rgb(184 39 43 / 0.45) 58% 80%, transparent 81%),
+    linear-gradient(30deg, transparent 0 60%, rgb(245 211 84 / 0.28) 61% 67%, transparent 68%),
+    repeating-radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--lex-c) 18%, transparent) 0 2px, transparent 3px 20px);
 }
 
 .lex-tone-low-giggity .lex-graphic-card::before {
@@ -852,13 +858,20 @@ button:disabled {
   opacity: 0.34;
 }
 
+.lex-tone-tirty-tree .lex-graphic-card::before {
+  color: color-mix(in srgb, var(--lex-b) 40%, transparent);
+  opacity: 0.22;
+}
+
 .lex-tone-tirty-tree .lex-graphic-card::after {
   background:
-    radial-gradient(ellipse at 74% 76%, rgb(122 73 45 / 0.44) 0 9%, transparent 10%),
-    radial-gradient(ellipse at 66% 80%, rgb(92 53 34 / 0.42) 0 8%, transparent 9%),
-    radial-gradient(ellipse at 82% 82%, rgb(152 90 48 / 0.34) 0 7%, transparent 8%),
-    radial-gradient(circle at 22% 24%, color-mix(in srgb, var(--lex-b) 36%, transparent) 0 12%, transparent 13%),
-    repeating-linear-gradient(42deg, transparent 0 21px, color-mix(in srgb, var(--lex-c) 22%, transparent) 22px 25px);
+    radial-gradient(circle at 49% 28%, color-mix(in srgb, var(--lex-b) 42%, transparent) 0 8%, transparent 9%),
+    radial-gradient(circle at 39% 42%, color-mix(in srgb, var(--lex-b) 42%, transparent) 0 8%, transparent 9%),
+    radial-gradient(circle at 59% 42%, color-mix(in srgb, var(--lex-b) 42%, transparent) 0 8%, transparent 9%),
+    radial-gradient(circle at 49% 51%, color-mix(in srgb, var(--lex-b) 34%, transparent) 0 6%, transparent 7%),
+    linear-gradient(100deg, transparent 0 50%, color-mix(in srgb, var(--lex-b) 36%, transparent) 51% 53%, transparent 54%),
+    linear-gradient(90deg, color-mix(in srgb, var(--lex-b) 18%, transparent) 0 31%, rgb(255 255 255 / 0.12) 32% 63%, color-mix(in srgb, var(--lex-c) 22%, transparent) 64% 100%),
+    repeating-conic-gradient(from 45deg at 50% 50%, color-mix(in srgb, var(--lex-a) 18%, transparent) 0deg 9deg, transparent 10deg 32deg);
 }
 
 .lex-tone-hundred .lex-graphic-card strong,
