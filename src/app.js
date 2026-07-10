@@ -8,7 +8,7 @@ import {
   targetIsClosed,
   targetIsOpenFor,
   undoLastDart
-} from "./rules.js?v=26";
+} from "./rules.js?v=27";
 import {
   X01_FORMATS,
   applyX01Visit,
@@ -16,7 +16,7 @@ import {
   getX01Stats,
   getX01TargetLabel,
   undoX01Visit
-} from "./x01-rules.js?v=26";
+} from "./x01-rules.js?v=27";
 
 const MURDER_STORAGE_KEY = "murder-darts-current-match";
 const X01_STORAGE_KEY = "darts-x01-current-match";
@@ -101,7 +101,7 @@ function renderSplashScreen() {
   app.innerHTML = `
     <section class="splash-screen" aria-label="Darts Night opening screen">
       <div class="splash-art-frame">
-        <img src="./assets/splash-dartboard-cape.webp?v=26" alt="Dartboard with a red superhero cape" fetchpriority="high">
+        <img src="./assets/splash-dartboard-cape.webp?v=27" alt="Dartboard with a red superhero cape" fetchpriority="high">
       </div>
       <div class="splash-title">
         <p class="eyebrow">Darts scorer</p>
@@ -749,11 +749,11 @@ function renderX01Match() {
         : ""
     }
 
+    ${renderX01ThrowTable()}
+
     <section class="x01-stats-grid" aria-label="X01 stats">
       ${x01Match.players.map((player, index) => renderX01Stats(player, index)).join("")}
     </section>
-
-    ${renderX01ThrowTable()}
 
     ${
       x01Match.status === "finished"
