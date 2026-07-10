@@ -8,7 +8,7 @@ import {
   targetIsClosed,
   targetIsOpenFor,
   undoLastDart
-} from "./rules.js?v=32";
+} from "./rules.js?v=33";
 import {
   X01_FORMATS,
   applyX01Visit,
@@ -16,12 +16,13 @@ import {
   getX01Stats,
   getX01TargetLabel,
   undoX01Visit
-} from "./x01-rules.js?v=32";
+} from "./x01-rules.js?v=33";
 
 const MURDER_STORAGE_KEY = "murder-darts-current-match";
 const X01_STORAGE_KEY = "darts-x01-current-match";
 const X01_COMPLETED_MATCHES_KEY = "darts-x01-completed-matches";
 const PLAYERS_STORAGE_KEY = "darts-stored-players";
+const LEX_MODE_STORAGE_KEY = "darts-lex-mode";
 const SEGMENTS = [
   { id: "single", label: "S" },
   { id: "double", label: "D" },
@@ -40,6 +41,8 @@ const SPLASH_DURATION_MS = 3000;
 const X01_THROW_TABLE_LIMIT = 5;
 const X01_STICKY_COMPACT_ON_PX = -8;
 const X01_STICKY_COMPACT_OFF_PX = 18;
+const LEX_GRAPHIC_DURATION_MS = 2800;
+const LEX_DOUBLE_TAP_MS = 420;
 
 const app = document.querySelector("#app");
 
@@ -56,6 +59,9 @@ let splashVisible = true;
 let splashDismissTimer = null;
 let x01LeagueCollapsed = false;
 let x01StatsCollapsed = false;
+let lexModeEnabled = loadLexMode();
+let lexGraphicTimer = null;
+let lastLexIconTapAt = 0;
 
 if (x01Match) {
   ensureX01MatchIdentity(x01Match);
@@ -106,7 +112,7 @@ function renderSplashScreen() {
   app.innerHTML = `
     <section class="splash-screen" aria-label="Darts Night opening screen">
       <div class="splash-art-frame">
-        <img src="./assets/splash-dartboard-cape.webp?v=32" alt="Dartboard with a red superhero cape" fetchpriority="high">
+        <img src="./assets/splash-dartboard-cape.webp?v=33" alt="Dartboard with a red superhero cape" fetchpriority="high">
       </div>
       <div class="splash-title">
         <p class="eyebrow">Darts scorer</p>
@@ -133,7 +139,7 @@ function renderMenu() {
   app.innerHTML = `
     <section class="menu-view">
       <div class="brand-lockup">
-        <img class="brand-icon" src="./assets/icon.svg" alt="">
+        <img class="brand-icon ${lexModeEnabled ? "is-lex" : ""}" src="./assets/icon.svg" alt="" data-action="toggle-lex-mode" role="button" tabindex="0">
         <div>
           <p class="eyebrow">Darts scorer</p>
           <h1>Darts Night</h1>
@@ -1160,6 +1166,28 @@ function renderX01CheckoutDartSheet() {
   `;
 }
 function wireNavigation() {
+  document.querySelectorAll("[data-action='toggle-lex-mode']").forEach((icon) => {
+    const toggleFromIcon = () => {
+      toggleLexMode();
+    };
+
+    icon.addEventListener("click", () => {
+      const now = Date.now();
+      if (now - lastLexIconTapAt <= LEX_DOUBLE_TAP_MS) {
+        lastLexIconTapAt = 0;
+        toggleFromIcon();
+        return;
+      }
+      lastLexIconTapAt = now;
+    });
+
+    icon.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        toggleFromIcon();
+      }
+    });
+  });
+
   document.querySelectorAll("[data-action='menu']").forEach((button) => {
     button.addEventListener("click", () => {
       pendingChoices = null;
@@ -1381,11 +1409,122 @@ function wireX01Events() {
 
 function recordX01Visit(visit) {
   x01Match = applyX01Visit(x01Match, visit);
+  const latestEntry = x01Match.history[x01Match.history.length - 1] || null;
   ensureX01MatchIdentity(x01Match);
   syncCompletedX01Match();
   pendingX01Checkout = null;
   saveX01Match();
   render();
+  showLexGraphicForEntry(latestEntry);
+}
+
+function toggleLexMode() {
+  lexModeEnabled = !lexModeEnabled;
+  saveLexMode();
+  alert(lexModeEnabled ? "Lex mode activated." : "Lex mode deactivated.");
+  render();
+}
+
+function loadLexMode() {
+  return localStorage.getItem(LEX_MODE_STORAGE_KEY) === "on";
+}
+
+function saveLexMode() {
+  localStorage.setItem(LEX_MODE_STORAGE_KEY, lexModeEnabled ? "on" : "off");
+}
+
+function showLexGraphicForEntry(entry) {
+  if (!lexModeEnabled || !entry || entry.bust) {
+    return;
+  }
+
+  const graphic = getLexGraphic(Number(entry.countedScore || 0));
+  if (!graphic) {
+    return;
+  }
+
+  showLexGraphic(graphic);
+}
+
+function getLexGraphic(score) {
+  if ([22, 32, 42, 52].includes(score)) {
+    return { tone: "choice", title: "what would you do", caption: score + " scored", kicker: "Lex mode" };
+  }
+
+  if (score === 3) {
+    return { tone: "wicked", title: "1, 2, 3", caption: "and I come with the wicked!", kicker: "Low score special" };
+  }
+
+  if (score === 100) {
+    return { tone: "hundred", title: "ONE..... HUNDRED", caption: "Ton hit", kicker: "Score call" };
+  }
+
+  if (score === 180) {
+    return { tone: "maximum", title: "Take a Picture!", caption: "Maximum visit", kicker: "180" };
+  }
+
+  const dartScores = new Map([
+    [80, "Great First Dart"],
+    [120, "Great Second Dart"],
+    [140, "Great Third Dart"]
+  ]);
+  if (dartScores.has(score)) {
+    return { tone: "great-dart", title: dartScores.get(score), caption: score + " scored", kicker: "Clean visit" };
+  }
+
+  if (score === 69) {
+    return { tone: "giggity", title: "All the Giggity", caption: "69 scored", kicker: "Lex mode" };
+  }
+
+  if (score === 59) {
+    return { tone: "low-giggity", title: "Not enough Giggity", caption: "59 scored", kicker: "Lex mode" };
+  }
+
+  if (score === 79) {
+    return { tone: "high-giggity", title: "Too much Giggity", caption: "79 scored", kicker: "Lex mode" };
+  }
+
+  if (score === 33) {
+    return { tone: "tirty-tree", title: "Tirty Tree and a Turd", caption: "33 scored", kicker: "Lex mode" };
+  }
+
+  return null;
+}
+
+function showLexGraphic(graphic) {
+  document.querySelectorAll(".lex-graphic-backdrop").forEach((element) => element.remove());
+
+  if (lexGraphicTimer) {
+    window.clearTimeout(lexGraphicTimer);
+    lexGraphicTimer = null;
+  }
+
+  const backdrop = document.createElement("div");
+  backdrop.className = "lex-graphic-backdrop lex-tone-" + graphic.tone;
+  backdrop.setAttribute("role", "status");
+  backdrop.setAttribute("aria-live", "polite");
+  backdrop.innerHTML = [
+    "<div class=\"lex-burst\" aria-hidden=\"true\"></div>",
+    "<section class=\"lex-graphic-card\">",
+    "<span>" + escapeHtml(graphic.kicker) + "</span>",
+    "<strong>" + escapeHtml(graphic.title) + "</strong>",
+    "<small>" + escapeHtml(graphic.caption) + "</small>",
+    "</section>"
+  ].join("");
+
+  backdrop.addEventListener("click", () => dismissLexGraphic(backdrop));
+  document.body.appendChild(backdrop);
+  lexGraphicTimer = window.setTimeout(() => dismissLexGraphic(backdrop), LEX_GRAPHIC_DURATION_MS);
+}
+
+function dismissLexGraphic(backdrop) {
+  if (lexGraphicTimer) {
+    window.clearTimeout(lexGraphicTimer);
+    lexGraphicTimer = null;
+  }
+
+  backdrop.classList.add("is-leaving");
+  window.setTimeout(() => backdrop.remove(), 220);
 }
 
 function handleMurderHit(hit) {

@@ -620,6 +620,210 @@ button:disabled {
   box-shadow: var(--shadow);
 }
 
+.brand-icon[data-action="toggle-lex-mode"] {
+  cursor: pointer;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+.brand-icon.is-lex {
+  border-color: rgb(226 181 66 / 62%);
+  box-shadow: var(--shadow), 0 0 26px rgb(226 181 66 / 34%);
+}
+
+.lex-graphic-backdrop {
+  --lex-a: #e2b542;
+  --lex-b: #38c286;
+  --lex-c: #ef6b61;
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 44%, rgb(247 242 233 / 0.10), transparent 24%),
+    radial-gradient(circle at 50% 50%, rgb(0 0 0 / 0.24), rgb(0 0 0 / 0.72) 68%);
+  animation: lex-overlay-in 260ms ease both;
+}
+
+.lex-graphic-backdrop.is-leaving {
+  animation: lex-overlay-out 220ms ease both;
+}
+
+.lex-burst {
+  position: absolute;
+  width: min(118vw, 620px);
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background:
+    repeating-conic-gradient(from 0deg, rgb(255 255 255 / 0.72) 0deg 4deg, transparent 4deg 13deg),
+    conic-gradient(from 22deg, var(--lex-a), var(--lex-b), var(--lex-c), var(--lex-a));
+  filter: blur(0.2px) saturate(1.2);
+  opacity: 0.82;
+  animation: lex-burst-spin 2800ms cubic-bezier(.18,.8,.22,1) both;
+}
+
+.lex-graphic-card {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  width: min(92vw, 620px);
+  padding: clamp(22px, 7vw, 48px) clamp(16px, 6vw, 40px);
+  border: 2px solid rgb(255 255 255 / 42%);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, rgb(255 255 255 / 0.18), transparent 38%),
+    linear-gradient(180deg, rgb(15 18 17 / 0.92), rgb(10 11 12 / 0.84));
+  box-shadow: 0 28px 70px rgb(0 0 0 / 64%), 0 0 42px color-mix(in srgb, var(--lex-a) 54%, transparent);
+  text-align: center;
+  transform: rotate(-1.5deg);
+  animation: lex-card-pop 540ms cubic-bezier(.2,1.18,.28,1) both;
+}
+
+.lex-graphic-card span,
+.lex-graphic-card small {
+  color: var(--lex-a);
+  font-weight: 950;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  text-shadow: 0 2px 14px rgb(0 0 0 / 60%);
+}
+
+.lex-graphic-card span {
+  font-size: clamp(0.72rem, 2.5vw, 0.95rem);
+}
+
+.lex-graphic-card strong {
+  display: block;
+  max-width: 100%;
+  color: var(--text);
+  font-size: clamp(2.45rem, 13vw, 5.9rem);
+  font-weight: 1000;
+  line-height: 0.88;
+  letter-spacing: 0;
+  text-wrap: balance;
+  text-transform: uppercase;
+  text-shadow:
+    0 4px 0 rgb(0 0 0 / 52%),
+    0 0 28px color-mix(in srgb, var(--lex-b) 54%, transparent);
+}
+
+.lex-graphic-card small {
+  margin-top: 12px;
+  color: var(--text);
+  font-size: clamp(0.95rem, 3.2vw, 1.35rem);
+}
+
+.lex-tone-choice {
+  --lex-a: #f0c95a;
+  --lex-b: #38c286;
+  --lex-c: #4fb3ff;
+}
+
+.lex-tone-wicked {
+  --lex-a: #b78cff;
+  --lex-b: #ff5ba7;
+  --lex-c: #f0c95a;
+}
+
+.lex-tone-hundred {
+  --lex-a: #e2b542;
+  --lex-b: #f7f2e9;
+  --lex-c: #38c286;
+}
+
+.lex-tone-maximum {
+  --lex-a: #ef6b61;
+  --lex-b: #f7f2e9;
+  --lex-c: #e2b542;
+}
+
+.lex-tone-great-dart {
+  --lex-a: #38c286;
+  --lex-b: #4fb3ff;
+  --lex-c: #f0c95a;
+}
+
+.lex-tone-giggity,
+.lex-tone-low-giggity,
+.lex-tone-high-giggity {
+  --lex-a: #f0c95a;
+  --lex-b: #ff5ba7;
+  --lex-c: #38c286;
+}
+
+.lex-tone-tirty-tree {
+  --lex-a: #f0c95a;
+  --lex-b: #ef6b61;
+  --lex-c: #b78cff;
+}
+
+.lex-tone-hundred .lex-graphic-card strong,
+.lex-tone-maximum .lex-graphic-card strong {
+  font-size: clamp(2.8rem, 14vw, 6.4rem);
+}
+
+.lex-tone-choice .lex-graphic-card strong,
+.lex-tone-tirty-tree .lex-graphic-card strong {
+  font-size: clamp(2.1rem, 10vw, 5.1rem);
+}
+
+@keyframes lex-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes lex-overlay-out {
+  to {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+
+@keyframes lex-burst-spin {
+  0% {
+    opacity: 0;
+    transform: scale(0.2) rotate(0deg);
+  }
+  18% {
+    opacity: 0.86;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.18) rotate(44deg);
+  }
+}
+
+@keyframes lex-card-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(22px) rotate(-5deg) scale(0.82);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(0) rotate(1.5deg) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotate(-1.5deg) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lex-graphic-backdrop,
+  .lex-graphic-backdrop.is-leaving,
+  .lex-burst,
+  .lex-graphic-card {
+    animation: none;
+  }
+}
+
 .setup-form {
   display: grid;
   gap: 14px;
