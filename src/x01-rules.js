@@ -1,4 +1,4 @@
-export const X01_STORAGE_VERSION = 2;
+export const X01_STORAGE_VERSION = 3;
 
 export const X01_FORMATS = {
   BEST_OF_LEGS: "best-of-legs",
@@ -11,6 +11,7 @@ const X01_BOGEY_CHECKOUTS = new Set([159, 162, 163, 165, 166, 168, 169]);
 export function createX01Match(options = {}) {
   const now = new Date().toISOString();
   const settings = normalizeSettings(options);
+  const playerNames = normalizePlayerNames(options, settings);
 
   return {
     version: X01_STORAGE_VERSION,
@@ -18,10 +19,7 @@ export function createX01Match(options = {}) {
     kind: "x01",
     status: "playing",
     settings,
-    players: [
-      createPlayer(options.playerNames?.[0] || "Player 1", settings, options.playerIds?.[0]),
-      createPlayer(options.playerNames?.[1] || "Player 2", settings, options.playerIds?.[1])
-    ],
+    players: playerNames.map((name, index) => createPlayer(name, settings, options.playerIds?.[index])),
     activePlayerIndex: 0,
     legStarterIndex: 0,
     legNumber: 1,
@@ -100,7 +98,7 @@ export function applyX01Visit(match, visit) {
   if (checkout) {
     awardLeg(next, next.activePlayerIndex, createdAt);
   } else {
-    next.activePlayerIndex = otherPlayer(next.activePlayerIndex);
+    next.activePlayerIndex = next.players.length === 1 ? 0 : otherPlayer(next.activePlayerIndex);
   }
 
   next.updatedAt = createdAt;
@@ -135,6 +133,10 @@ export function getX01Stats(player) {
 
 export function getX01TargetLabel(match) {
   const target = match.settings.formatTarget;
+  if (match.settings.practice) {
+    return `${target} leg practice`;
+  }
+
   switch (match.settings.format) {
     case X01_FORMATS.BEST_OF_LEGS:
       return `Best of ${target} legs`;
@@ -156,7 +158,7 @@ function awardLeg(match, winnerIndex, completedAt) {
     return;
   }
 
-  if (match.settings.format === X01_FORMATS.RACE_TO_SETS && winner.legs >= match.settings.legsPerSet) {
+  if (!match.settings.practice && match.settings.format === X01_FORMATS.RACE_TO_SETS && winner.legs >= match.settings.legsPerSet) {
     winner.sets += 1;
     match.players.forEach((player) => {
       player.legs = 0;
@@ -177,7 +179,7 @@ function awardLeg(match, winnerIndex, completedAt) {
 
 function startNextLeg(match) {
   match.legNumber += 1;
-  match.legStarterIndex = otherPlayer(match.legStarterIndex);
+  match.legStarterIndex = match.players.length === 1 ? 0 : otherPlayer(match.legStarterIndex);
   match.activePlayerIndex = match.legStarterIndex;
 
   match.players.forEach((player) => {
@@ -188,6 +190,10 @@ function startNextLeg(match) {
 
 function matchIsWon(match, playerIndex) {
   const player = match.players[playerIndex];
+
+  if (match.settings.practice) {
+    return player.legs >= match.settings.formatTarget;
+  }
 
   switch (match.settings.format) {
     case X01_FORMATS.BEST_OF_LEGS:
@@ -217,7 +223,9 @@ function createPlayer(name, settings, playerId) {
 
 function normalizeSettings(options) {
   const startScore = Number(options.startScore || 501);
-  const format = Object.values(X01_FORMATS).includes(options.format) ? options.format : X01_FORMATS.BEST_OF_LEGS;
+  const practice = Boolean(options.practice);
+  const requestedFormat = Object.values(X01_FORMATS).includes(options.format) ? options.format : X01_FORMATS.BEST_OF_LEGS;
+  const format = practice ? X01_FORMATS.RACE_TO_LEGS : requestedFormat;
   const formatTarget = Math.max(1, Number(options.formatTarget || (format === X01_FORMATS.BEST_OF_LEGS ? 5 : 3)));
   const legsPerSet = Math.max(1, Number(options.legsPerSet || 3));
 
@@ -226,8 +234,18 @@ function normalizeSettings(options) {
     format,
     formatTarget,
     legsPerSet,
-    doubleIn: Boolean(options.doubleIn)
+    doubleIn: Boolean(options.doubleIn),
+    practice
   };
+}
+
+function normalizePlayerNames(options, settings) {
+  const names = Array.isArray(options.playerNames) ? options.playerNames : [];
+  if (settings.practice) {
+    return [normalizeName(names[0] || "Player 1")];
+  }
+
+  return [normalizeName(names[0] || "Player 1"), normalizeName(names[1] || "Player 2")];
 }
 
 function isBogeyCheckout(score) {

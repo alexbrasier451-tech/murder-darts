@@ -1763,6 +1763,19 @@ select {
   transition: box-shadow 160ms ease;
 }
 
+.x01-match-strip.is-solo {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.x01-match-strip.is-solo .x01-mini-team.team-a-mini,
+.x01-match-strip.is-solo .x01-mini-state {
+  grid-column: 1;
+}
+
+.x01-stats-grid.is-solo {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .x01-mini-team {
   grid-template-columns: 30px minmax(0, 1fr) auto;
   grid-template-rows: auto auto;

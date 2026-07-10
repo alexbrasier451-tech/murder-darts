@@ -8,7 +8,7 @@ import {
   targetIsClosed,
   targetIsOpenFor,
   undoLastDart
-} from "./rules.js?v=28";
+} from "./rules.js?v=29";
 import {
   X01_FORMATS,
   applyX01Visit,
@@ -16,7 +16,7 @@ import {
   getX01Stats,
   getX01TargetLabel,
   undoX01Visit
-} from "./x01-rules.js?v=28";
+} from "./x01-rules.js?v=29";
 
 const MURDER_STORAGE_KEY = "murder-darts-current-match";
 const X01_STORAGE_KEY = "darts-x01-current-match";
@@ -103,7 +103,7 @@ function renderSplashScreen() {
   app.innerHTML = `
     <section class="splash-screen" aria-label="Darts Night opening screen">
       <div class="splash-art-frame">
-        <img src="./assets/splash-dartboard-cape.webp?v=28" alt="Dartboard with a red superhero cape" fetchpriority="high">
+        <img src="./assets/splash-dartboard-cape.webp?v=29" alt="Dartboard with a red superhero cape" fetchpriority="high">
       </div>
       <div class="splash-title">
         <p class="eyebrow">Darts scorer</p>
@@ -442,7 +442,7 @@ function renderRecentX01Matches(matches) {
                         <tr>
                           <th scope="row">${escapeHtml(formatShortDate(match.completedAt))}</th>
                           <td>${escapeHtml(match.formatLabel)}</td>
-                          <td>${match.won ? "Won" : "Lost"}</td>
+                          <td>${match.practice ? "Practice" : match.won ? "Won" : "Lost"}</td>
                           <td>${formatAverage(match.average)}</td>
                           <td>${match.highestScore}</td>
                           <td>${match.bestOut || "-"}</td>
@@ -643,8 +643,17 @@ function renderX01Setup() {
 
     <form id="x01-setup-form" class="setup-form">
       <div class="form-grid">
+        <label>
+          <span>Mode</span>
+          <select name="mode" id="x01-mode-select">
+            <option value="match">Match</option>
+            <option value="practice">Solo practice</option>
+          </select>
+        </label>
         ${renderPlayerSelectField("playerA", "Player 1", players[0]?.name || "Player 1")}
-        ${renderPlayerSelectField("playerB", "Player 2", players[1]?.name || "Player 2")}
+        <div class="x01-player-two-field">
+          ${renderPlayerSelectField("playerB", "Player 2", players[1]?.name || "Player 2")}
+        </div>
         <label>
           <span>X01 start</span>
           <select name="startScore">
@@ -655,7 +664,7 @@ function renderX01Setup() {
           <span>Custom start</span>
           <input name="customStart" type="number" inputmode="numeric" min="2" max="5001" placeholder="Optional">
         </label>
-        <label>
+        <label class="x01-format-field">
           <span>Format</span>
           <select name="format" id="x01-format-select">
             <option value="${X01_FORMATS.BEST_OF_LEGS}">Best of legs</option>
@@ -664,7 +673,7 @@ function renderX01Setup() {
           </select>
         </label>
         <label>
-          <span>Target</span>
+          <span data-x01-target-label>Target</span>
           <input name="formatTarget" type="number" inputmode="numeric" min="1" max="21" value="5">
         </label>
         <label class="x01-sets-field is-hidden" aria-hidden="true">
@@ -682,28 +691,48 @@ function renderX01Setup() {
 
   wireNavigation();
   const setupForm = document.querySelector("#x01-setup-form");
+  const modeSelect = setupForm.elements.mode;
   const formatSelect = setupForm.elements.format;
+  const playerTwoField = setupForm.querySelector(".x01-player-two-field");
+  const formatField = setupForm.querySelector(".x01-format-field");
   const setsField = setupForm.querySelector(".x01-sets-field");
+  const targetLabel = setupForm.querySelector("[data-x01-target-label]");
+  const practiceModeIsSelected = () => modeSelect.value === "practice";
   const syncSetsField = () => {
-    const needsSets = formatSelect.value === X01_FORMATS.RACE_TO_SETS;
+    const needsSets = !practiceModeIsSelected() && formatSelect.value === X01_FORMATS.RACE_TO_SETS;
     setsField.classList.toggle("is-hidden", !needsSets);
     setsField.setAttribute("aria-hidden", String(!needsSets));
   };
+  const syncPracticeFields = () => {
+    const practice = practiceModeIsSelected();
+    playerTwoField.classList.toggle("is-hidden", practice);
+    playerTwoField.setAttribute("aria-hidden", String(practice));
+    formatField.classList.toggle("is-hidden", practice);
+    formatField.setAttribute("aria-hidden", String(practice));
+    targetLabel.textContent = practice ? "Practice legs" : "Target";
+    if (practice) {
+      formatSelect.value = X01_FORMATS.RACE_TO_LEGS;
+    }
+    syncSetsField();
+  };
 
-  syncSetsField();
+  syncPracticeFields();
+  modeSelect.addEventListener("change", syncPracticeFields);
   formatSelect.addEventListener("change", syncSetsField);
   setupForm.addEventListener("submit", (event) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    const names = [form.get("playerA"), form.get("playerB")].map(normalizeName);
+    const practice = form.get("mode") === "practice";
+    const names = (practice ? [form.get("playerA")] : [form.get("playerA"), form.get("playerB")]).map(normalizeName);
     const customStart = Number(form.get("customStart"));
     const playerIds = addPlayersFromNames(names);
 
     x01Match = createX01Match({
       playerNames: names,
       playerIds,
+      practice,
       startScore: customStart > 1 ? customStart : Number(form.get("startScore")),
-      format: form.get("format"),
+      format: practice ? X01_FORMATS.RACE_TO_LEGS : form.get("format"),
       doubleIn: form.get("doubleIn") === "on",
       formatTarget: Number(form.get("formatTarget")),
       legsPerSet: Number(form.get("legsPerSet"))
@@ -717,6 +746,7 @@ function renderX01Match() {
   const activePlayer = x01Match.players[x01Match.activePlayerIndex];
   const latestEntry = x01Match.history[x01Match.history.length - 1] ?? null;
   const activeClass = teamClass(x01Match.activePlayerIndex, "active");
+  const practice = isX01PracticeMatch();
   const resultClass =
     x01Match.winnerIndex === null ? "draw-result" : teamClass(x01Match.winnerIndex, "result");
 
@@ -724,13 +754,15 @@ function renderX01Match() {
     ${renderX01MatchToolbar()}
 
     <div class="x01-sticky-sentinel" aria-hidden="true"></div>
-    <section class="match-strip x01-match-strip ${activeClass}" aria-label="X01 score">
+    <section class="match-strip x01-match-strip ${activeClass} ${practice ? "is-solo" : ""}" aria-label="X01 score">
       ${renderX01MiniPlayer(0, latestEntry)}
       <div class="mini-state x01-mini-state">
         <span>${x01Match.status === "finished" ? "Final" : getX01TargetLabel(x01Match)}</span>
-        <strong>${x01Match.status === "finished" ? "Match over" : `${activePlayer.name} to throw`}</strong>
+        <strong>${
+          x01Match.status === "finished" ? (practice ? "Practice complete" : "Match over") : `${activePlayer.name} to throw`
+        }</strong>
       </div>
-      ${renderX01MiniPlayer(1, latestEntry)}
+      ${x01Match.players[1] ? renderX01MiniPlayer(1, latestEntry) : ""}
     </section>
 
     ${
@@ -739,10 +771,11 @@ function renderX01Match() {
           <section class="result-band ${resultClass}">
             <div class="result-copy">
               <p class="eyebrow">Final</p>
-              <h2>${escapeHtml(x01Match.players[x01Match.winnerIndex].name)} wins</h2>
+              <h2>${escapeHtml(getX01ResultTitle())}</h2>
               <div class="final-scoreline">
-                <span>${escapeHtml(x01Match.players[0].name)} ${formatX01Progress(x01Match.players[0])}</span>
-                <span>${escapeHtml(x01Match.players[1].name)} ${formatX01Progress(x01Match.players[1])}</span>
+                ${x01Match.players
+                  .map((player) => `<span>${escapeHtml(player.name)} ${formatX01Progress(player)}</span>`)
+                  .join("")}
               </div>
             </div>
             <button class="primary-action" data-action="x01-new">New match</button>
@@ -753,7 +786,7 @@ function renderX01Match() {
 
     ${renderX01ThrowTable()}
 
-    <section class="x01-stats-grid" aria-label="X01 stats">
+    <section class="x01-stats-grid ${practice ? "is-solo" : ""}" aria-label="X01 stats">
       ${x01Match.players.map((player, index) => renderX01Stats(player, index)).join("")}
     </section>
 
@@ -779,6 +812,17 @@ function renderX01Match() {
   wireNavigation();
   wireX01Events();
   wireX01StickyScoreStrip();
+}
+
+function isX01PracticeMatch(match = x01Match) {
+  return Boolean(match?.settings?.practice || match?.players?.length === 1);
+}
+
+function getX01ResultTitle() {
+  if (isX01PracticeMatch()) {
+    return `${x01Match.players[0].name} completed practice`;
+  }
+  return `${x01Match.players[x01Match.winnerIndex].name} wins`;
 }
 
 function renderX01MatchToolbar() {
@@ -1509,7 +1553,7 @@ function buildSelectedX01Statistics(profile) {
   const matches = getCompletedX01MatchesForProfile(profile);
   const totals = matches.reduce(
     (record, match) => {
-      record.wins += match.won ? 1 : 0;
+      record.wins += !match.practice && match.won ? 1 : 0;
       record.legs += match.legs;
       record.darts += match.totalDarts;
       record.scored += match.totalScored;
@@ -1551,19 +1595,19 @@ function buildSelectedX01Statistics(profile) {
     }
   );
 
-  const completed = matches.length;
+  const competitiveMatches = matches.filter((match) => !match.practice).length;
   const bestLeg = totals.wonLegDarts.length ? Math.min(...totals.wonLegDarts) : 0;
   const worstLeg = totals.wonLegDarts.length ? Math.max(...totals.wonLegDarts) : 0;
 
   return {
     ...totals,
     matches,
-    losses: completed - totals.wins,
+    losses: competitiveMatches - totals.wins,
     average: totals.darts ? (totals.scored / totals.darts) * 3 : 0,
     firstNineAverage: totals.firstNineDarts ? (totals.firstNineScored / totals.firstNineDarts) * 3 : 0,
     visitAverage: totals.visits ? totals.scored / totals.visits : 0,
     checkoutPercentage: totals.checkoutAttempts ? totals.checkouts / totals.checkoutAttempts : 0,
-    winRate: completed ? totals.wins / completed : 0,
+    winRate: competitiveMatches ? totals.wins / competitiveMatches : 0,
     bestLeg,
     worstLeg,
     headToHead: buildHeadToHeadRecords(profile)
@@ -1595,6 +1639,7 @@ function getCompletedX01MatchesForProfile(profile) {
           id: match.id,
           completedAt: match.completedAt,
           formatLabel: formatX01MatchLabel(match),
+          practice: Boolean(match.settings?.practice),
           won: Boolean(player.won),
           legs: Number(player.legs || player.checkouts || 0),
           sets: Number(player.sets || 0),
@@ -1627,6 +1672,10 @@ function buildHeadToHeadRecords(profile) {
   const records = new Map();
 
   loadX01CompletedMatches().forEach((match) => {
+    if (match.settings?.practice) {
+      return;
+    }
+
     const selected = match.players.find((candidate) => x01PlayerMatchesProfile(candidate, profile));
     if (!selected) {
       return;
@@ -1728,7 +1777,8 @@ function createCompletedX01MatchSummary(match) {
       format: match.settings.format,
       formatTarget: match.settings.formatTarget,
       legsPerSet: match.settings.legsPerSet,
-      doubleIn: Boolean(match.settings.doubleIn)
+      doubleIn: Boolean(match.settings.doubleIn),
+      practice: Boolean(match.settings.practice)
     },
     players: match.players.map((player, index) => {
       const entries = match.history.filter((entry) => entry.playerIndex === index);
@@ -1853,6 +1903,7 @@ function ensureX01MatchIdentity(match) {
   match.id ||= createId();
   match.settings ||= {};
   match.settings.doubleIn = Boolean(match.settings.doubleIn);
+  match.settings.practice = Boolean(match.settings.practice || match.players?.length === 1);
   match.history ||= [];
   inferX01DoubleInHistory(match);
 
@@ -1899,6 +1950,9 @@ function inferX01DoubleInHistory(match) {
 
 function formatX01MatchLabel(match) {
   const startScore = match.settings?.startScore || "X01";
+  if (match.settings?.practice) {
+    return `${startScore} practice${match.settings?.doubleIn ? " D-in" : ""}`;
+  }
   const mode = match.settings?.doubleIn ? "D-in" : "Straight";
   return `${startScore} ${mode}`;
 }

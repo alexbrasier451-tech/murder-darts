@@ -5,6 +5,7 @@ import {
   applyX01Visit,
   createX01Match,
   getX01Stats,
+  getX01TargetLabel,
   undoX01Visit
 } from "../src/x01-rules.js";
 
@@ -118,6 +119,35 @@ test("race to sets awards sets and finishes at the target", () => {
   assert.equal(match.players[0].sets, 2);
   assert.equal(match.status, "finished");
   assert.equal(match.winnerIndex, 0);
+});
+
+test("solo practice keeps one player active and finishes at the practice target", () => {
+  let match = createX01Match({
+    playerNames: ["Solo"],
+    startScore: 10,
+    practice: true,
+    formatTarget: 2
+  });
+
+  assert.equal(match.players.length, 1);
+  assert.equal(match.activePlayerIndex, 0);
+  assert.equal(getX01TargetLabel(match), "2 leg practice");
+
+  match = applyX01Visit(match, { score: 5, darts: 3 });
+  assert.equal(match.activePlayerIndex, 0);
+  assert.equal(match.players[0].remaining, 5);
+  assert.equal(match.status, "playing");
+
+  match = applyX01Visit(match, { score: 5, darts: 2 });
+  assert.equal(match.status, "playing");
+  assert.equal(match.players[0].legs, 1);
+  assert.equal(match.players[0].remaining, 10);
+  assert.equal(match.activePlayerIndex, 0);
+
+  match = applyX01Visit(match, { score: 10, darts: 1 });
+  assert.equal(match.status, "finished");
+  assert.equal(match.winnerIndex, 0);
+  assert.equal(match.players[0].legs, 2);
 });
 
 test("undo restores score, active player, stats, and history", () => {
