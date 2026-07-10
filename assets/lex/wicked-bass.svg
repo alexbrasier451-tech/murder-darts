@@ -1,0 +1,12 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" role="img" aria-label="Bass speakers and lightning for wicked score">
+  <defs><radialGradient id="bg" cx="50%" cy="42%" r="70%"><stop offset="0" stop-color="#4f216f"/><stop offset="0.55" stop-color="#171026"/><stop offset="1" stop-color="#06040a"/></radialGradient><filter id="glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+  <rect width="900" height="620" fill="url(#bg)"/>
+  <g opacity="0.26" stroke="#ff5ba7" stroke-width="9"><path d="M0 496c80-100 160-100 240 0s160 100 240 0 160-100 240 0 160 100 240 0" fill="none"/><path d="M0 390c80-82 160-82 240 0s160 82 240 0 160-82 240 0 160 82 240 0" fill="none"/></g>
+  <g filter="url(#glow)">
+    <g transform="translate(82 160)"><rect width="224" height="352" rx="28" fill="#101116" stroke="#f7f2e9" stroke-width="10"/><circle cx="112" cy="116" r="62" fill="#20112f" stroke="#b78cff" stroke-width="12"/><circle cx="112" cy="260" r="82" fill="#20112f" stroke="#ff5ba7" stroke-width="14"/><circle cx="112" cy="260" r="34" fill="#f0c95a"/></g>
+    <g transform="translate(594 160)"><rect width="224" height="352" rx="28" fill="#101116" stroke="#f7f2e9" stroke-width="10"/><circle cx="112" cy="116" r="62" fill="#20112f" stroke="#b78cff" stroke-width="12"/><circle cx="112" cy="260" r="82" fill="#20112f" stroke="#ff5ba7" stroke-width="14"/><circle cx="112" cy="260" r="34" fill="#f0c95a"/></g>
+    <path d="M471 72L344 320h98l-52 230 184-292h-106z" fill="#f0c95a" stroke="#fff3a2" stroke-width="9"/>
+    <g transform="translate(342 412)" fill="#38c286"><rect width="32" height="84" rx="8"/><rect x="52" y="-48" width="32" height="132" rx="8"/><rect x="104" y="-18" width="32" height="102" rx="8"/><rect x="156" y="-86" width="32" height="170" rx="8"/></g>
+  </g>
+  <text x="450" y="112" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="72" fill="#fff" stroke="#100619" stroke-width="12" paint-order="stroke">1 2 3</text>
+</svg>

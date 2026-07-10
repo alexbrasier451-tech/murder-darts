@@ -1,0 +1,50 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" role="img" aria-label="Patriotic action puppet scene with explosions">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="70%"><stop offset="0" stop-color="#304d9d"/><stop offset="0.55" stop-color="#171a36"/><stop offset="1" stop-color="#07080f"/></radialGradient>
+    <linearGradient id="red" x1="0" x2="1"><stop stop-color="#d92631"/><stop offset="1" stop-color="#ff7b61"/></linearGradient>
+    <linearGradient id="skin" x1="0" x2="1"><stop stop-color="#ffc397"/><stop offset="1" stop-color="#e78f65"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="900" height="620" fill="url(#bg)"/>
+  <g opacity="0.24">
+    <path d="M0 70h900v46H0zM0 164h900v46H0zM0 258h900v46H0zM0 352h900v46H0zM0 446h900v46H0z" fill="url(#red)"/>
+    <rect width="365" height="304" fill="#173d8f"/>
+    <g fill="#fff7bf">
+      <path d="M58 50l10 23 25 2-19 16 6 24-22-13-22 13 6-24-19-16 25-2z"/>
+      <path d="M164 86l8 19 21 2-16 13 5 20-18-11-18 11 5-20-16-13 21-2z"/>
+      <path d="M276 54l9 21 23 2-18 15 6 22-20-12-20 12 6-22-18-15 23-2z"/>
+      <path d="M82 206l8 18 20 2-15 13 5 19-18-10-17 10 4-19-15-13 20-2z"/>
+      <path d="M226 210l9 20 22 2-17 14 5 21-19-11-19 11 5-21-17-14 22-2z"/>
+    </g>
+  </g>
+  <g stroke="#f7f2e9" stroke-width="3" opacity="0.6">
+    <path d="M238 0L188 218M304 0L293 219M636 0L598 224M704 0L710 226"/>
+  </g>
+  <g transform="translate(72 168) rotate(-8)" filter="url(#glow)">
+    <path d="M98 84c-54 8-84 53-73 107 11 56 53 88 108 78 49-9 82-53 73-107C198 111 154 75 98 84z" fill="url(#skin)" stroke="#2d130c" stroke-width="7"/>
+    <path d="M54 74c24-56 115-56 155 2-46-12-105-8-155-2z" fill="#d8b263" stroke="#2d130c" stroke-width="7"/>
+    <circle cx="89" cy="156" r="11" fill="#101010"/><circle cx="152" cy="145" r="11" fill="#101010"/>
+    <path d="M107 202c29 19 62 12 78-18" fill="none" stroke="#4b160f" stroke-width="9" stroke-linecap="round"/>
+    <path d="M74 264h124l42 160H28z" fill="#243d87" stroke="#0b1021" stroke-width="8"/>
+    <path d="M82 268l54 76 49-76" fill="#f7f2e9"/>
+    <path d="M22 310l-72 86M224 316l82 72M92 424l-22 90M172 424l26 92" stroke="#f7c298" stroke-width="28" stroke-linecap="round"/>
+    <circle cx="-58" cy="402" r="18" fill="#f7c298"/><circle cx="315" cy="394" r="18" fill="#f7c298"/>
+  </g>
+  <g transform="translate(578 168) rotate(7)" filter="url(#glow)">
+    <path d="M104 92c-55-2-94 36-94 91 0 57 39 96 95 96 50 0 90-39 90-91 0-51-38-94-91-96z" fill="url(#skin)" stroke="#27100c" stroke-width="7"/>
+    <path d="M20 114c14-70 109-92 161-35-48 1-107 16-161 35z" fill="#25150e" stroke="#27100c" stroke-width="7"/>
+    <circle cx="72" cy="164" r="10" fill="#101010"/><circle cx="133" cy="165" r="10" fill="#101010"/>
+    <path d="M76 216c28 21 64 20 88-4" fill="none" stroke="#4b160f" stroke-width="9" stroke-linecap="round"/>
+    <path d="M40 278h124l32 164H0z" fill="#a6252d" stroke="#120708" stroke-width="8"/>
+    <path d="M54 280l46 72 48-72" fill="#f7f2e9"/>
+    <path d="M22 320l-96 44M170 318l96 52M48 442l-22 80M142 442l20 82" stroke="#f7c298" stroke-width="28" stroke-linecap="round"/>
+    <circle cx="-84" cy="368" r="18" fill="#f7c298"/><circle cx="275" cy="374" r="18" fill="#f7c298"/>
+  </g>
+  <g filter="url(#glow)">
+    <circle cx="454" cy="355" r="94" fill="#ffb733" opacity="0.92"/>
+    <circle cx="454" cy="355" r="58" fill="#ff4b2f"/>
+    <path d="M454 214l34 100 106-6-88 59 38 99-90-64-87 68 34-104-91-54 107 1z" fill="#ffe36e" opacity="0.95"/>
+  </g>
+  <text x="450" y="86" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="54" fill="#fff7bf" stroke="#101018" stroke-width="8" paint-order="stroke">PUPPET PANIC</text>
+  <text x="450" y="560" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="48" fill="#fff">WHAT WOULD YOU DO?</text>
+</svg>

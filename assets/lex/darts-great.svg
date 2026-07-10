@@ -1,0 +1,15 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" role="img" aria-label="Darts streaking into a glowing board">
+  <defs><radialGradient id="bg" cx="50%" cy="45%" r="70%"><stop offset="0" stop-color="#0d6547"/><stop offset="0.58" stop-color="#0b1514"/><stop offset="1" stop-color="#050606"/></radialGradient><filter id="glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+  <rect width="900" height="620" fill="url(#bg)"/>
+  <g opacity="0.3" stroke="#f7f2e9" stroke-width="2"><path d="M0 104h900M0 208h900M0 312h900M0 416h900M0 520h900M150 0v620M300 0v620M450 0v620M600 0v620M750 0v620"/></g>
+  <g transform="translate(500 122)" filter="url(#glow)">
+    <circle cx="158" cy="180" r="172" fill="#f7f2e9"/><circle cx="158" cy="180" r="146" fill="#101513"/><circle cx="158" cy="180" r="112" fill="#ef6b61"/><circle cx="158" cy="180" r="80" fill="#101513"/><circle cx="158" cy="180" r="48" fill="#38c286"/><circle cx="158" cy="180" r="18" fill="#ffd34f"/>
+    <g stroke="#f7f2e9" stroke-width="4" opacity="0.8"><path d="M158 8v344M-14 180h344M37 59l242 242M279 59L37 301"/></g>
+  </g>
+  <g filter="url(#glow)">
+    <path d="M74 458l468-196" stroke="#ffd34f" stroke-width="12" stroke-linecap="round"/><path d="M542 262l-62-14 35 54z" fill="#f7f2e9"/><path d="M76 459l66 16-20-52z" fill="#ef6b61"/>
+    <path d="M116 196l438 80" stroke="#4fb3ff" stroke-width="12" stroke-linecap="round"/><path d="M554 276l-48-42 4 64z" fill="#f7f2e9"/><path d="M116 196l42-48 16 61z" fill="#38c286"/>
+    <path d="M74 320l476-18" stroke="#f7f2e9" stroke-width="12" stroke-linecap="round"/><path d="M550 302l-55-32 14 65z" fill="#ffd34f"/><path d="M75 320l42-40 9 58z" fill="#ef6b61"/>
+  </g>
+  <text x="248" y="105" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="58" fill="#fff" stroke="#07100c" stroke-width="10" paint-order="stroke">GREAT DART</text>
+</svg>

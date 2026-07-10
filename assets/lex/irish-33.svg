@@ -1,0 +1,27 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" role="img" aria-label="Irish pub themed thirty three scene">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="35%" r="72%"><stop offset="0" stop-color="#176b3e"/><stop offset="0.55" stop-color="#0e2318"/><stop offset="1" stop-color="#050806"/></radialGradient>
+    <linearGradient id="beer" y1="0" y2="1"><stop stop-color="#fff2a8"/><stop offset="0.18" stop-color="#fff2a8"/><stop offset="0.19" stop-color="#d88721"/><stop offset="1" stop-color="#8a3c0e"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="900" height="620" fill="url(#bg)"/>
+  <g opacity="0.26">
+    <rect x="0" y="0" width="300" height="620" fill="#169b62"/><rect x="300" y="0" width="300" height="620" fill="#f7f2e9"/><rect x="600" y="0" width="300" height="620" fill="#ff883e"/>
+    <path d="M0 450c120-38 238-38 356 0s266 40 544-30v200H0z" fill="#071008"/>
+  </g>
+  <g filter="url(#glow)">
+    <path d="M202 56h496l-35 134H237z" fill="#1b1109" stroke="#ffd34f" stroke-width="10"/>
+    <text x="450" y="126" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="45" fill="#ffd34f">THE TIRTY TREE</text>
+    <text x="450" y="174" text-anchor="middle" font-family="Georgia, serif" font-size="30" fill="#fff7d0">public house</text>
+  </g>
+  <g transform="translate(298 225)">
+    <path d="M58 0h238c35 0 62 28 58 62l-32 286c-3 31-30 54-61 54H92c-31 0-58-23-62-54L-1 62C-5 28 22 0 58 0z" fill="url(#beer)" stroke="#f7f2e9" stroke-width="10"/>
+    <path d="M28 28c48 26 82 4 116 0 48-5 68 28 116 0 23-13 63 6 79 31 0 0 12-67-78-75H58C3-14-21 29 28 28z" fill="#fff8d8"/>
+    <path d="M354 96h54c52 0 82 38 76 90-7 57-43 88-98 88h-60" fill="none" stroke="#f7f2e9" stroke-width="28"/>
+  </g>
+  <g fill="#26d36d" stroke="#073f20" stroke-width="8" filter="url(#glow)">
+    <g transform="translate(116 266) rotate(-16)"><circle r="38"/><circle cx="45" cy="28" r="38"/><circle cx="-45" cy="28" r="38"/><path d="M0 38c-16 52-30 96-68 132" fill="none" stroke-linecap="round"/></g>
+    <g transform="translate(733 292) rotate(14) scale(0.9)"><circle r="38"/><circle cx="45" cy="28" r="38"/><circle cx="-45" cy="28" r="38"/><path d="M0 38c14 51 22 95 60 132" fill="none" stroke-linecap="round"/></g>
+  </g>
+  <text x="450" y="573" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="68" fill="#fff" stroke="#06230f" stroke-width="12" paint-order="stroke">33</text>
+</svg>

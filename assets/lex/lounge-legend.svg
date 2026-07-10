@@ -1,0 +1,38 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" role="img" aria-label="Original cartoon lounge legend with neon sign">
+  <defs>
+    <radialGradient id="bg" cx="64%" cy="35%" r="72%"><stop offset="0" stop-color="#7f2736"/><stop offset="0.52" stop-color="#241320"/><stop offset="1" stop-color="#07070a"/></radialGradient>
+    <linearGradient id="skin" x1="0" x2="1"><stop stop-color="#ffd2a6"/><stop offset="1" stop-color="#e99b69"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="900" height="620" fill="url(#bg)"/>
+  <g opacity="0.32">
+    <circle cx="130" cy="115" r="52" fill="#ffd34f"/><circle cx="762" cy="92" r="38" fill="#47d7ff"/>
+    <path d="M0 458c132-54 266-56 398-7s267 51 502-20v189H0z" fill="#08080b"/>
+    <path d="M0 432h900" stroke="#ffd34f" stroke-width="8"/>
+  </g>
+  <g filter="url(#glow)">
+    <rect x="52" y="58" width="286" height="96" rx="20" fill="#111" stroke="#ffd34f" stroke-width="8"/>
+    <text x="195" y="122" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="44" fill="#ffd34f">GIGGITY</text>
+  </g>
+  <g transform="translate(475 78)">
+    <path d="M104 296c-102 8-181 92-190 222h389c-13-129-96-214-199-222z" fill="#b42131" stroke="#120507" stroke-width="9"/>
+    <path d="M26 330c-28 58-40 116-41 188h82c10-70 34-113 78-138z" fill="#f7f2e9" opacity="0.92"/>
+    <path d="M190 332c46 26 75 74 88 186h84c-7-84-31-150-73-198z" fill="#f7f2e9" opacity="0.92"/>
+    <path d="M104 26C32 26-22 80-22 162c0 97 67 166 162 166 82 0 140-58 140-141 0-96-76-161-176-161z" fill="url(#skin)" stroke="#2b120d" stroke-width="10"/>
+    <path d="M-14 108c28-82 132-116 231-49-55-6-109 5-167 37z" fill="#2b1a10" stroke="#2b120d" stroke-width="9"/>
+    <path d="M196 84c47 24 79 76 84 126 16-41 5-93-27-129z" fill="#2b1a10"/>
+    <ellipse cx="52" cy="156" rx="18" ry="22" fill="#fff"/><ellipse cx="150" cy="158" rx="18" ry="22" fill="#fff"/>
+    <circle cx="58" cy="164" r="7" fill="#111"/><circle cx="156" cy="166" r="7" fill="#111"/>
+    <path d="M54 226c48 54 122 52 171-4-11 74-156 80-171 4z" fill="#fff" stroke="#4b160f" stroke-width="8"/>
+    <path d="M45 218c54 24 122 22 187-2" stroke="#4b160f" stroke-width="7" fill="none"/>
+    <path d="M-43 368l-112 72" stroke="#ffd2a6" stroke-width="34" stroke-linecap="round"/>
+    <path d="M277 365l108 75" stroke="#ffd2a6" stroke-width="34" stroke-linecap="round"/>
+    <circle cx="-160" cy="444" r="24" fill="#ffd2a6"/><circle cx="390" cy="444" r="24" fill="#ffd2a6"/>
+  </g>
+  <g transform="translate(126 254) rotate(-13)" filter="url(#glow)">
+    <path d="M0 0h158l-21 210H22z" fill="#54c7ff" opacity="0.28" stroke="#eaf9ff" stroke-width="5"/>
+    <ellipse cx="78" cy="0" rx="79" ry="16" fill="#eaf9ff"/>
+    <path d="M46 56c30 19 66 19 96-1" stroke="#eaf9ff" stroke-width="8" fill="none"/>
+  </g>
+  <text x="450" y="570" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="54" fill="#ffd34f" stroke="#13070b" stroke-width="9" paint-order="stroke">LOUNGE LEGEND</text>
+</svg>

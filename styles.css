@@ -1042,6 +1042,203 @@ button:disabled {
   font-size: clamp(2.1rem, 10vw, 5.1rem);
 }
 
+.lex-scene {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  background: rgb(0 0 0 / 0.16);
+}
+
+.lex-scene-art {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  filter: saturate(1.22) contrast(1.08);
+  transform: scale(1.02);
+  animation: lex-scene-surge 3800ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.lex-copy {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  justify-items: center;
+  width: min(100%, 560px);
+  margin-top: auto;
+  padding: clamp(13px, 3.5vw, 22px);
+  border: 1px solid rgb(255 255 255 / 0.28);
+  border-radius: 8px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--lex-a) 20%, transparent), transparent 45%),
+    linear-gradient(180deg, rgb(5 7 8 / 0.54), rgb(5 7 8 / 0.88));
+  box-shadow: 0 18px 44px rgb(0 0 0 / 0.56), inset 0 1px 0 rgb(255 255 255 / 0.16);
+  backdrop-filter: blur(6px);
+}
+
+.lex-graphic-card {
+  align-content: end;
+  min-height: min(74vh, 640px);
+  padding: clamp(15px, 4vw, 28px);
+}
+
+.lex-graphic-card::before {
+  z-index: 2;
+  opacity: 0.14;
+  mix-blend-mode: screen;
+}
+
+.lex-graphic-card::after {
+  z-index: 2;
+  background:
+    linear-gradient(180deg, rgb(0 0 0 / 0.08), transparent 34%, rgb(0 0 0 / 0.46) 72%, rgb(0 0 0 / 0.72)),
+    radial-gradient(circle at 50% 22%, color-mix(in srgb, var(--lex-a) 16%, transparent), transparent 42%);
+}
+
+.lex-tone-choice .lex-scene-art,
+.lex-tone-maximum .lex-scene-art {
+  animation-name: lex-scene-slam;
+}
+
+.lex-tone-giggity .lex-scene-art,
+.lex-tone-low-giggity .lex-scene-art,
+.lex-tone-high-giggity .lex-scene-art {
+  animation-name: lex-lounge-wobble;
+}
+
+.lex-tone-wicked .lex-scene-art {
+  animation-name: lex-bass-hit;
+}
+
+.lex-tone-tirty-tree .lex-scene-art {
+  animation-name: lex-pub-bounce;
+}
+
+.lex-tone-hundred .lex-copy,
+.lex-tone-maximum .lex-copy {
+  box-shadow: 0 18px 48px rgb(0 0 0 / 0.62), 0 0 34px color-mix(in srgb, var(--lex-a) 34%, transparent);
+}
+
+.lex-tone-low-giggity .lex-scene-art {
+  filter: saturate(0.82) contrast(1.02) grayscale(0.12);
+}
+
+.lex-tone-high-giggity .lex-scene-art {
+  filter: saturate(1.55) contrast(1.16) hue-rotate(10deg);
+}
+
+@media (max-width: 520px) {
+  .lex-graphic-backdrop {
+    padding: 12px;
+  }
+
+  .lex-graphic-card {
+    width: min(96vw, 620px);
+    min-height: min(78vh, 640px);
+    padding: 12px;
+  }
+
+  .lex-copy {
+    padding: 13px 11px;
+  }
+
+  .lex-graphic-card strong {
+    font-size: clamp(2rem, 12vw, 4.1rem);
+  }
+
+  .lex-tone-choice .lex-graphic-card strong,
+  .lex-tone-tirty-tree .lex-graphic-card strong {
+    font-size: clamp(1.75rem, 10vw, 3.45rem);
+  }
+}
+@keyframes lex-scene-surge {
+  0% {
+    opacity: 0;
+    transform: scale(1.12) rotate(-1deg);
+  }
+  18% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.02) rotate(0deg);
+  }
+}
+
+@keyframes lex-scene-slam {
+  0% {
+    opacity: 0;
+    transform: scale(1.24) rotate(-4deg);
+  }
+  16% {
+    opacity: 1;
+    transform: scale(0.98) rotate(1.4deg);
+  }
+  42% {
+    transform: scale(1.04) rotate(-0.8deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.02) rotate(0deg);
+  }
+}
+
+@keyframes lex-lounge-wobble {
+  0% {
+    opacity: 0;
+    transform: scale(1.16) translateX(18px) rotate(2deg);
+  }
+  18% {
+    opacity: 1;
+    transform: scale(1.02) translateX(0) rotate(-1.4deg);
+  }
+  56% {
+    transform: scale(1.045) translateX(-7px) rotate(1deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.02) translateX(0) rotate(0deg);
+  }
+}
+
+@keyframes lex-bass-hit {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  12% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  24% {
+    transform: scale(0.99);
+  }
+  40% {
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes lex-pub-bounce {
+  0% {
+    opacity: 0;
+    transform: translateY(34px) scale(1.08);
+  }
+  20% {
+    opacity: 1;
+    transform: translateY(-8px) scale(1.02);
+  }
+  36% {
+    transform: translateY(4px) scale(1.035);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1.02);
+  }
+}
 @keyframes lex-overlay-in {
   from {
     opacity: 0;

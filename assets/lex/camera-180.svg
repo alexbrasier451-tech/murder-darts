@@ -1,0 +1,16 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" role="img" aria-label="Camera flash celebrating a 180">
+  <defs><radialGradient id="bg" cx="50%" cy="45%" r="70%"><stop offset="0" stop-color="#6a1d20"/><stop offset="0.52" stop-color="#15171a"/><stop offset="1" stop-color="#050506"/></radialGradient><filter id="glow"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+  <rect width="900" height="620" fill="url(#bg)"/>
+  <g opacity="0.28" fill="#fff2a8"><path d="M450 30l24 175 112-137-72 162 164-75-142 108 179 9-176 34 151 96-170-59 84 157-121-130-16 181-30-179-102 150 61-169-158 80 132-115-180-2 176-31-147-102 168 66-78-160 116 135z"/></g>
+  <g transform="translate(227 186)" filter="url(#glow)">
+    <rect x="0" y="82" width="446" height="270" rx="36" fill="#101215" stroke="#f7f2e9" stroke-width="12"/>
+    <rect x="64" y="36" width="146" height="72" rx="18" fill="#292d31" stroke="#f7f2e9" stroke-width="10"/>
+    <circle cx="246" cy="220" r="94" fill="#0a0b0c" stroke="#f7f2e9" stroke-width="15"/>
+    <circle cx="246" cy="220" r="56" fill="#ef6b61" stroke="#ffd34f" stroke-width="13"/>
+    <circle cx="246" cy="220" r="24" fill="#f7f2e9"/>
+    <rect x="333" y="126" width="64" height="42" rx="10" fill="#ffd34f"/>
+  </g>
+  <g transform="translate(92 386) rotate(-12)"><rect width="178" height="146" fill="#f7f2e9"/><rect x="17" y="16" width="144" height="88" fill="#101215"/><text x="89" y="82" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="56" fill="#ef6b61">180</text></g>
+  <g transform="translate(641 390) rotate(11)"><rect width="184" height="144" fill="#f7f2e9"/><rect x="17" y="15" width="150" height="86" fill="#101215"/><text x="92" y="82" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="48" fill="#ffd34f">MAX</text></g>
+  <text x="450" y="94" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="64" fill="#fff" stroke="#101015" stroke-width="10" paint-order="stroke">TAKE A PICTURE!</text>
+</svg>

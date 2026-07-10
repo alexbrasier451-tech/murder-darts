@@ -1,0 +1,16 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" role="img" aria-label="Darts caller announcing one hundred">
+  <defs><radialGradient id="bg" cx="50%" cy="44%" r="72%"><stop offset="0" stop-color="#3a341c"/><stop offset="0.55" stop-color="#151713"/><stop offset="1" stop-color="#050605"/></radialGradient><filter id="glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+  <rect width="900" height="620" fill="url(#bg)"/>
+  <g opacity="0.27" stroke="#e2b542" stroke-width="5"><circle cx="450" cy="310" r="250" fill="none"/><circle cx="450" cy="310" r="180" fill="none"/><circle cx="450" cy="310" r="110" fill="none"/><path d="M450 60v500M200 310h500M273 133l354 354M627 133L273 487"/></g>
+  <g filter="url(#glow)">
+    <path d="M190 386h520l-62 162H252z" fill="#161a16" stroke="#f7f2e9" stroke-width="10"/>
+    <path d="M366 314h168l38 92H328z" fill="#e2b542" stroke="#fff0a8" stroke-width="9"/>
+    <circle cx="450" cy="226" r="90" fill="#ffd2a6" stroke="#2a120c" stroke-width="9"/>
+    <path d="M366 208c14-88 130-112 181-32-68-20-110-12-181 32z" fill="#333" stroke="#2a120c" stroke-width="8"/>
+    <circle cx="420" cy="232" r="10" fill="#111"/><circle cx="480" cy="232" r="10" fill="#111"/>
+    <path d="M414 275c25 22 62 21 86-2" fill="none" stroke="#5b1a10" stroke-width="8" stroke-linecap="round"/>
+    <g transform="translate(596 180) rotate(-8)"><path d="M0 72l150-72v170L0 100z" fill="#f7f2e9" stroke="#141414" stroke-width="8"/><rect x="-46" y="54" width="58" height="66" rx="14" fill="#e2b542" stroke="#141414" stroke-width="8"/></g>
+  </g>
+  <text x="450" y="138" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="104" fill="#fff" stroke="#0e0f0d" stroke-width="16" paint-order="stroke">100</text>
+  <text x="450" y="584" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="54" fill="#e2b542" stroke="#0e0f0d" stroke-width="10" paint-order="stroke">ONE HUNDRED</text>
+</svg>
