@@ -8,7 +8,7 @@ import {
   targetIsClosed,
   targetIsOpenFor,
   undoLastDart
-} from "./rules.js?v=29";
+} from "./rules.js?v=30";
 import {
   X01_FORMATS,
   applyX01Visit,
@@ -16,7 +16,7 @@ import {
   getX01Stats,
   getX01TargetLabel,
   undoX01Visit
-} from "./x01-rules.js?v=29";
+} from "./x01-rules.js?v=30";
 
 const MURDER_STORAGE_KEY = "murder-darts-current-match";
 const X01_STORAGE_KEY = "darts-x01-current-match";
@@ -53,6 +53,8 @@ let selectedStatisticsPlayerId = null;
 let cleanupX01StickyScoreStrip = null;
 let splashVisible = true;
 let splashDismissTimer = null;
+let x01LeagueCollapsed = false;
+let x01StatsCollapsed = false;
 
 if (x01Match) {
   ensureX01MatchIdentity(x01Match);
@@ -103,7 +105,7 @@ function renderSplashScreen() {
   app.innerHTML = `
     <section class="splash-screen" aria-label="Darts Night opening screen">
       <div class="splash-art-frame">
-        <img src="./assets/splash-dartboard-cape.webp?v=29" alt="Dartboard with a red superhero cape" fetchpriority="high">
+        <img src="./assets/splash-dartboard-cape.webp?v=30" alt="Dartboard with a red superhero cape" fetchpriority="high">
       </div>
       <div class="splash-title">
         <p class="eyebrow">Darts scorer</p>
@@ -737,6 +739,8 @@ function renderX01Setup() {
       formatTarget: Number(form.get("formatTarget")),
       legsPerSet: Number(form.get("legsPerSet"))
     });
+    x01LeagueCollapsed = false;
+    x01StatsCollapsed = false;
     saveX01Match();
     view = "x01-match";
     render();
@@ -785,10 +789,7 @@ function renderX01Match() {
     }
 
     ${renderX01ThrowTable()}
-
-    <section class="x01-stats-grid ${practice ? "is-solo" : ""}" aria-label="X01 stats">
-      ${x01Match.players.map((player, index) => renderX01Stats(player, index)).join("")}
-    </section>
+    ${renderX01StatsSection(practice)}
 
     ${
       x01Match.status === "finished"
@@ -835,6 +836,29 @@ function renderX01MatchToolbar() {
         <button class="ghost-action" data-action="menu">Menu</button>
       </div>
     </header>
+  `;
+}
+
+function renderX01StatsSection(practice) {
+  const summary = summarizeX01StatsLine();
+
+  if (x01StatsCollapsed) {
+    return renderX01CollapsedSection("X01 stats", "Stats", summary, "toggle-x01-stats");
+  }
+
+  return `
+    <section class="x01-stats-section" aria-label="X01 stats">
+      <div class="x01-section-toolbar">
+        <div>
+          <p class="eyebrow">Stats</p>
+          <h2>Live stats</h2>
+        </div>
+        <button class="icon-action section-toggle" type="button" data-action="toggle-x01-stats" aria-label="Hide X01 stats" aria-expanded="true">-</button>
+      </div>
+      <div class="x01-stats-grid ${practice ? "is-solo" : ""}">
+        ${x01Match.players.map((player, index) => renderX01Stats(player, index)).join("")}
+      </div>
+    </section>
   `;
 }
 
@@ -890,11 +914,18 @@ function renderX01ThrowTable() {
     currentLegEntries.filter((entry) => entry.playerIndex === playerIndex).slice(-X01_THROW_TABLE_LIMIT).reverse()
   );
 
+  if (x01LeagueCollapsed) {
+    return renderX01CollapsedSection("Last five throws", "League record", summarizeX01LeagueLine(), "toggle-x01-league");
+  }
+
   return `
     <section class="x01-throw-table" aria-label="Last five throws">
       <div class="x01-throw-table-head">
-        <p class="eyebrow">League record</p>
-        <h2>Last five throws</h2>
+        <div>
+          <p class="eyebrow">League record</p>
+          <h2>Last five throws</h2>
+        </div>
+        <button class="icon-action section-toggle" type="button" data-action="toggle-x01-league" aria-label="Hide last five throws" aria-expanded="true">-</button>
       </div>
       <table>
         <thead>
@@ -918,6 +949,50 @@ function renderX01ThrowTable() {
       </table>
     </section>
   `;
+}
+
+function renderX01CollapsedSection(label, eyebrow, summary, action) {
+  return `
+    <section class="x01-collapse-line" aria-label="${escapeHtml(label)}">
+      <div>
+        <p class="eyebrow">${escapeHtml(eyebrow)}</p>
+        <strong>${escapeHtml(summary)}</strong>
+      </div>
+      <button class="icon-action section-toggle" type="button" data-action="${escapeHtml(action)}" aria-label="Show ${escapeHtml(label)}" aria-expanded="false">+</button>
+    </section>
+  `;
+}
+
+function summarizeX01StatsLine() {
+  return x01Match.players
+    .map((player) => {
+      const stats = getX01Stats(player);
+      return `${player.name}: ${player.remaining} left / 3DA ${formatAverage(stats.average)} / high ${stats.highestScore}`;
+    })
+    .join(" | ");
+}
+
+function summarizeX01LeagueLine() {
+  const currentLegEntries = getCurrentX01LegEntries();
+  return x01Match.players
+    .map((player, playerIndex) => {
+      const entries = currentLegEntries.filter((entry) => entry.playerIndex === playerIndex);
+      const latest = entries[entries.length - 1];
+      return `${player.name}: ${latest ? summarizeX01ThrowEntry(latest) : "-"}`;
+    })
+    .join(" | ");
+}
+
+function summarizeX01ThrowEntry(entry) {
+  if (entry.checkout) {
+    return `Out ${entry.remainingBefore}`;
+  }
+
+  if (entry.bust) {
+    return entry.message || "Bust";
+  }
+
+  return `${entry.countedScore} (${entry.remainingAfter} left)`;
 }
 
 function renderX01ThrowCell(entry) {
@@ -1083,6 +1158,8 @@ function wireNavigation() {
     button.addEventListener("click", () => {
       if (!x01Match || confirm("Start a new X01 match?")) {
         pendingX01Checkout = null;
+        x01LeagueCollapsed = false;
+        x01StatsCollapsed = false;
         x01Match = null;
         localStorage.removeItem(X01_STORAGE_KEY);
         view = "x01-setup";
@@ -1162,6 +1239,20 @@ function wireMurderEvents() {
 }
 function wireX01Events() {
 
+  document.querySelectorAll("[data-action='toggle-x01-league']").forEach((button) => {
+    button.addEventListener("click", () => {
+      x01LeagueCollapsed = !x01LeagueCollapsed;
+      render();
+    });
+  });
+
+  document.querySelectorAll("[data-action='toggle-x01-stats']").forEach((button) => {
+    button.addEventListener("click", () => {
+      x01StatsCollapsed = !x01StatsCollapsed;
+      render();
+    });
+  });
+
   document.querySelectorAll("[data-action='x01-undo']").forEach((button) => {
     button.addEventListener("click", () => {
       pendingX01Checkout = null;
@@ -1177,6 +1268,8 @@ function wireX01Events() {
     button.addEventListener("click", () => {
       if (!x01Match.history.length || x01Match.status === "finished" || confirm("Start a new X01 match?")) {
         pendingX01Checkout = null;
+        x01LeagueCollapsed = false;
+        x01StatsCollapsed = false;
         x01Match = null;
         localStorage.removeItem(X01_STORAGE_KEY);
         view = "x01-setup";
