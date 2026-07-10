@@ -1,16 +1,16 @@
-const CACHE_NAME = "murder-darts-v38";
+const CACHE_NAME = "murder-darts-v39";
 
 const ASSETS = [
   "./",
   "./index.html",
-  "./styles.css?v=38",
+  "./styles.css?v=39",
   "./manifest.webmanifest",
   "./assets/icon.svg",
   "./assets/icon-maskable.svg",
-  "./assets/splash-dartboard-cape.webp?v=38",
-  "./src/app.js?v=38",
-  "./src/rules.js?v=38",
-  "./src/x01-rules.js?v=38"
+  "./assets/splash-dartboard-cape.webp?v=39",
+  "./src/app.js?v=39",
+  "./src/rules.js?v=39",
+  "./src/x01-rules.js?v=39"
 ];
 
 self.addEventListener("install", (event) => {
@@ -27,8 +27,10 @@ self.addEventListener("activate", (event) => {
       .then((names) =>
         Promise.all(names.filter((name) => name !== CACHE_NAME).map((name) => caches.delete(name)))
       )
+      .then(() => self.clients.claim())
+      .then(() => self.clients.matchAll({ type: "window", includeUncontrolled: true }))
+      .then((clients) => Promise.all(clients.map((client) => client.navigate(client.url).catch(() => null))))
   );
-  self.clients.claim();
 });
 
 self.addEventListener("fetch", (event) => {
