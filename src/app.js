@@ -8,7 +8,7 @@ import {
   targetIsClosed,
   targetIsOpenFor,
   undoLastDart
-} from "./rules.js?v=33";
+} from "./rules.js?v=34";
 import {
   X01_FORMATS,
   applyX01Visit,
@@ -16,7 +16,7 @@ import {
   getX01Stats,
   getX01TargetLabel,
   undoX01Visit
-} from "./x01-rules.js?v=33";
+} from "./x01-rules.js?v=34";
 
 const MURDER_STORAGE_KEY = "murder-darts-current-match";
 const X01_STORAGE_KEY = "darts-x01-current-match";
@@ -112,7 +112,7 @@ function renderSplashScreen() {
   app.innerHTML = `
     <section class="splash-screen" aria-label="Darts Night opening screen">
       <div class="splash-art-frame">
-        <img src="./assets/splash-dartboard-cape.webp?v=33" alt="Dartboard with a red superhero cape" fetchpriority="high">
+        <img src="./assets/splash-dartboard-cape.webp?v=34" alt="Dartboard with a red superhero cape" fetchpriority="high">
       </div>
       <div class="splash-title">
         <p class="eyebrow">Darts scorer</p>
@@ -1448,19 +1448,19 @@ function showLexGraphicForEntry(entry) {
 
 function getLexGraphic(score) {
   if ([22, 32, 42, 52].includes(score)) {
-    return { tone: "choice", title: "what would you do", caption: score + " scored", kicker: "Lex mode" };
+    return { tone: "choice", title: "what would you do", caption: score + " scored", kicker: "Lex mode", art: "???" };
   }
 
   if (score === 3) {
-    return { tone: "wicked", title: "1, 2, 3", caption: "and I come with the wicked!", kicker: "Low score special" };
+    return { tone: "wicked", title: "1, 2, 3", caption: "and I come with the wicked!", kicker: "Low score special", art: "1 2 3" };
   }
 
   if (score === 100) {
-    return { tone: "hundred", title: "ONE..... HUNDRED", caption: "Ton hit", kicker: "Score call" };
+    return { tone: "hundred", title: "ONE..... HUNDRED", caption: "Ton hit", kicker: "Score call", art: "100" };
   }
 
   if (score === 180) {
-    return { tone: "maximum", title: "Take a Picture!", caption: "Maximum visit", kicker: "180" };
+    return { tone: "maximum", title: "Take a Picture!", caption: "Maximum visit", kicker: "180", art: "180" };
   }
 
   const dartScores = new Map([
@@ -1469,23 +1469,23 @@ function getLexGraphic(score) {
     [140, "Great Third Dart"]
   ]);
   if (dartScores.has(score)) {
-    return { tone: "great-dart", title: dartScores.get(score), caption: score + " scored", kicker: "Clean visit" };
+    return { tone: "great-dart", title: dartScores.get(score), caption: score + " scored", kicker: "Clean visit", art: String(score) };
   }
 
   if (score === 69) {
-    return { tone: "giggity", title: "All the Giggity", caption: "69 scored", kicker: "Lex mode" };
+    return { tone: "giggity", title: "All the Giggity", caption: "69 scored", kicker: "Lex mode", art: "69" };
   }
 
   if (score === 59) {
-    return { tone: "low-giggity", title: "Not enough Giggity", caption: "59 scored", kicker: "Lex mode" };
+    return { tone: "low-giggity", title: "Not enough Giggity", caption: "59 scored", kicker: "Lex mode", art: "59" };
   }
 
   if (score === 79) {
-    return { tone: "high-giggity", title: "Too much Giggity", caption: "79 scored", kicker: "Lex mode" };
+    return { tone: "high-giggity", title: "Too much Giggity", caption: "79 scored", kicker: "Lex mode", art: "79" };
   }
 
   if (score === 33) {
-    return { tone: "tirty-tree", title: "Tirty Tree and a Turd", caption: "33 scored", kicker: "Lex mode" };
+    return { tone: "tirty-tree", title: "Tirty Tree and a Turd", caption: "33 scored", kicker: "Lex mode", art: "33" };
   }
 
   return null;
@@ -1505,7 +1505,7 @@ function showLexGraphic(graphic) {
   backdrop.setAttribute("aria-live", "polite");
   backdrop.innerHTML = [
     "<div class=\"lex-burst\" aria-hidden=\"true\"></div>",
-    "<section class=\"lex-graphic-card\">",
+    "<section class=\"lex-graphic-card\" data-art=\"" + escapeHtml(graphic.art || "") + "\">",
     "<span>" + escapeHtml(graphic.kicker) + "</span>",
     "<strong>" + escapeHtml(graphic.title) + "</strong>",
     "<small>" + escapeHtml(graphic.caption) + "</small>",
