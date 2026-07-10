@@ -8,7 +8,7 @@ import {
   targetIsClosed,
   targetIsOpenFor,
   undoLastDart
-} from "./rules.js?v=31";
+} from "./rules.js?v=32";
 import {
   X01_FORMATS,
   applyX01Visit,
@@ -16,7 +16,7 @@ import {
   getX01Stats,
   getX01TargetLabel,
   undoX01Visit
-} from "./x01-rules.js?v=31";
+} from "./x01-rules.js?v=32";
 
 const MURDER_STORAGE_KEY = "murder-darts-current-match";
 const X01_STORAGE_KEY = "darts-x01-current-match";
@@ -106,7 +106,7 @@ function renderSplashScreen() {
   app.innerHTML = `
     <section class="splash-screen" aria-label="Darts Night opening screen">
       <div class="splash-art-frame">
-        <img src="./assets/splash-dartboard-cape.webp?v=31" alt="Dartboard with a red superhero cape" fetchpriority="high">
+        <img src="./assets/splash-dartboard-cape.webp?v=32" alt="Dartboard with a red superhero cape" fetchpriority="high">
       </div>
       <div class="splash-title">
         <p class="eyebrow">Darts scorer</p>
@@ -1639,99 +1639,155 @@ function buildTwoDartScores(oneDartScores) {
   return scores;
 }
 
+// Published 60-170 checkout routes from Darts501's checkout chart; 2-59 use local double-out fallbacks.
+function getDarts501CheckoutChart() {
+  return {
+  170: ["T20","T20","Bull"],
+  167: ["T20","T19","Bull"],
+  164: ["T20","T18","Bull"],
+  161: ["T20","T17","Bull"],
+  160: ["T20","T20","D20"],
+  158: ["T20","T20","D19"],
+  157: ["T20","T19","D20"],
+  156: ["T20","T20","D18"],
+  155: ["T20","T19","D19"],
+  154: ["T20","T18","D20"],
+  153: ["T20","T19","D18"],
+  152: ["T20","T20","D16"],
+  151: ["T20","T17","D20"],
+  150: ["T20","T18","D18"],
+  149: ["T20","T19","D16"],
+  148: ["T20","T16","D20"],
+  147: ["T20","T17","D18"],
+  146: ["T20","T18","D16"],
+  145: ["T20","T15","D20"],
+  144: ["T20","T20","D12"],
+  143: ["T20","T17","D16"],
+  142: ["T20","T14","D20"],
+  141: ["T20","T19","D12"],
+  140: ["T20","T16","D16"],
+  139: ["T19","T14","D20"],
+  138: ["T20","T18","D12"],
+  137: ["T19","T16","D16"],
+  136: ["T20","T20","D8"],
+  135: ["T20","T17","D12"],
+  134: ["T20","T14","D16"],
+  133: ["T20","T19","D8"],
+  132: ["T20","T16","D12"],
+  131: ["T20","T13","D16"],
+  130: ["T20","T20","D5"],
+  129: ["T19","T16","D12"],
+  128: ["T18","T14","D16"],
+  127: ["T20","T17","D8"],
+  126: ["T19","T19","D6"],
+  125: ["25","T20","D20"],
+  124: ["T20","T16","D8"],
+  123: ["T19","T16","D9"],
+  122: ["T18","T20","D4"],
+  121: ["T17","T10","D20"],
+  120: ["T20","20","D20"],
+  119: ["T19","T10","D16"],
+  118: ["T20","18","D20"],
+  117: ["T20","17","D20"],
+  116: ["T20","16","D20"],
+  115: ["T20","15","D20"],
+  114: ["T20","14","D20"],
+  113: ["T20","13","D20"],
+  112: ["T20","12","D20"],
+  111: ["T20","19","D16"],
+  110: ["T20","18","D16"],
+  109: ["T19","20","D16"],
+  108: ["T20","16","D16"],
+  107: ["T19","18","D16"],
+  106: ["T20","14","D16"],
+  105: ["T19","16","D16"],
+  104: ["T18","18","D16"],
+  103: ["T20","3","D20"],
+  102: ["T20","10","D16"],
+  101: ["T20","1","D20"],
+  100: ["T20","D20"],
+  99: ["T19","10","D16"],
+  98: ["T20","D19"],
+  97: ["T19","D20"],
+  96: ["T20","D18"],
+  95: ["T19","D19"],
+  94: ["T18","D20"],
+  93: ["T19","D18"],
+  92: ["T20","D16"],
+  91: ["T17","D20"],
+  90: ["T20","D15"],
+  89: ["T19","D16"],
+  88: ["T16","D20"],
+  87: ["T17","D18"],
+  86: ["T18","D16"],
+  85: ["T15","D20"],
+  84: ["T20","D12"],
+  83: ["T17","D16"],
+  82: ["T14","D20"],
+  81: ["T19","D12"],
+  80: ["T20","D10"],
+  79: ["T19","D11"],
+  78: ["T18","D12"],
+  77: ["T19","D10"],
+  76: ["T20","D8"],
+  75: ["T17","D12"],
+  74: ["T14","D16"],
+  73: ["T19","D8"],
+  72: ["T16","D12"],
+  71: ["T13","D16"],
+  70: ["T10","D20"],
+  69: ["T15","D12"],
+  68: ["T20","D4"],
+  67: ["T17","D8"],
+  66: ["T10","D18"],
+  65: ["T19","D4"],
+  64: ["T16","D8"],
+  63: ["T13","D12"],
+  62: ["T10","D16"],
+  61: ["T15","D8"],
+  60: ["20","D20"]
+  };
+}
+
 function buildX01CheckoutRoutes() {
-  const routes = new Map();
-  const scoringDarts = buildX01CheckoutScoringDarts();
-  const finishDarts = buildX01CheckoutFinishDarts();
+  const routes = new Map(
+    Object.entries(getDarts501CheckoutChart()).map(([score, route]) => [Number(score), route])
+  );
 
-  finishDarts.forEach((finish) => addX01CheckoutCandidate(routes, finish.value, [finish]));
-
-  scoringDarts.forEach((first) => {
-    finishDarts.forEach((finish) => {
-      addX01CheckoutCandidate(routes, first.value + finish.value, [first, finish]);
-    });
-  });
-
-  scoringDarts.forEach((first) => {
-    scoringDarts.forEach((second) => {
-      finishDarts.forEach((finish) => {
-        addX01CheckoutCandidate(routes, first.value + second.value + finish.value, [first, second, finish]);
-      });
-    });
-  });
-
-  X01_STATS_BOGEY_CHECKOUTS.forEach((score) => routes.delete(score));
-  routes.delete(1);
-
-  const displayRoutes = new Map();
-  routes.forEach((route, score) => {
-    displayRoutes.set(score, route.map((dart) => dart.label));
-  });
-  return displayRoutes;
+  addLowX01CheckoutRoutes(routes);
+  return routes;
 }
 
-function buildX01CheckoutScoringDarts() {
-  const darts = [{ label: "25", value: 25, kind: "single", number: 25 }];
+function addLowX01CheckoutRoutes(routes) {
+  routes.set(50, ["Bull"]);
 
-  for (let number = 20; number >= 1; number -= 1) {
-    darts.push({ label: `T${number}`, value: number * 3, kind: "treble", number });
-  }
+  for (let score = 2; score < 60; score += 1) {
+    if (routes.has(score)) {
+      continue;
+    }
 
-  for (let number = 20; number >= 1; number -= 1) {
-    darts.push({ label: `S${number}`, value: number, kind: "single", number });
-  }
-
-  for (let number = 20; number >= 1; number -= 1) {
-    darts.push({ label: `D${number}`, value: number * 2, kind: "double", number });
-  }
-
-  return darts;
-}
-
-function buildX01CheckoutFinishDarts() {
-  const darts = [];
-  for (let number = 20; number >= 1; number -= 1) {
-    darts.push({ label: `D${number}`, value: number * 2, kind: "finish", number });
-  }
-  darts.push({ label: "Bull", value: 50, kind: "finish", number: 25 });
-  return darts;
-}
-
-function addX01CheckoutCandidate(routes, score, route) {
-  if (score < 2 || score > 170) {
-    return;
-  }
-
-  const existing = routes.get(score);
-  if (!existing || scoreX01CheckoutRoute(route, score) < scoreX01CheckoutRoute(existing, score)) {
-    routes.set(score, route);
+    const route = buildLowX01CheckoutRoute(score);
+    if (route) {
+      routes.set(score, route);
+    }
   }
 }
 
-function scoreX01CheckoutRoute(route, score) {
-  const final = route[route.length - 1];
-  const setup = route.slice(0, -1);
-  const finishRank = rankX01Finish(final.label);
-  const setupPenalty = setup.reduce((total, dart, index) => total + rankX01SetupDart(dart, score, index), 0);
-  return route.length * 10000 + finishRank * 30 + setupPenalty;
-}
-
-function rankX01Finish(label) {
-  const preferred = ["D20", "D16", "Bull", "D18", "D12", "D10", "D8", "D6", "D4", "D2", "D1"];
-  const index = preferred.indexOf(label);
-  if (index >= 0) {
-    return index;
+function buildLowX01CheckoutRoute(score) {
+  if (score % 2 === 0 && score <= 40) {
+    return [`D${score / 2}`];
   }
-  return 20 + Math.abs(20 - Number(label.slice(1) || 0));
-}
 
-function rankX01SetupDart(dart, score, index) {
-  const kindPenalty = dart.kind === "treble" ? 0 : dart.kind === "single" ? 18 : 180;
-  const lowScorePenalty = score <= 70 && dart.kind === "treble" ? 60 : 0;
-  const repeatPenalty = index > 0 && dart.kind !== "treble" ? 8 : 0;
-  return kindPenalty + lowScorePenalty + repeatPenalty - dart.value / 3;
-}
+  const preferredDoubles = [20, 16, 10, 8, 18, 12, 14, 6, 4, 2, 1, 19, 17, 15, 13, 11, 9, 7, 5, 3];
+  for (const double of preferredDoubles) {
+    const setup = score - double * 2;
+    if (setup >= 1 && setup <= 20) {
+      return [String(setup), `D${double}`];
+    }
+  }
 
+  return null;
+}
 function renderStatisticsMenuDetail() {
   const completedMatches = loadX01CompletedMatches().length;
   const suffix = completedMatches === 1 ? "match" : "matches";
