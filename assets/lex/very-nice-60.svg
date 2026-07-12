@@ -1,0 +1,41 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" role="img" aria-label="Original moustached reporter meme style scene saying very good very nice">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="38%" r="76%"><stop offset="0" stop-color="#2e8b57"/><stop offset="0.5" stop-color="#172018"/><stop offset="1" stop-color="#050705"/></radialGradient>
+    <linearGradient id="skin" x1="0" x2="1"><stop stop-color="#ffd0a4"/><stop offset="1" stop-color="#d9895f"/></linearGradient>
+    <linearGradient id="suit" x1="0" x2="1"><stop stop-color="#b8b2a6"/><stop offset="1" stop-color="#5e5a54"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="shadow"><feDropShadow dx="0" dy="10" stdDeviation="7" flood-color="#000" flood-opacity="0.58"/></filter>
+  </defs>
+  <rect width="900" height="620" fill="url(#bg)"/>
+  <g opacity="0.25" stroke="#f0c95a" stroke-width="4">
+    <path d="M0 112h900M0 224h900M0 336h900M0 448h900M112 0v620M224 0v620M336 0v620M448 0v620M560 0v620M672 0v620M784 0v620"/>
+    <circle cx="450" cy="312" r="260" fill="none"/>
+    <circle cx="450" cy="312" r="170" fill="none"/>
+  </g>
+  <g filter="url(#glow)">
+    <path d="M450 38l44 114 122 8-94 78 29 120-101-65-101 65 29-120-94-78 122-8z" fill="#f0c95a" opacity="0.9"/>
+    <circle cx="450" cy="220" r="150" fill="none" stroke="#f7f2e9" stroke-width="10" opacity="0.55"/>
+  </g>
+  <g transform="translate(286 106)" filter="url(#shadow)">
+    <path d="M48 292c28-96 96-152 182-152s154 56 182 152l54 208H-6z" fill="url(#suit)" stroke="#10100e" stroke-width="10"/>
+    <path d="M112 308l118 114 116-114z" fill="#f7f2e9"/>
+    <path d="M184 324l46 58 45-58" fill="#1b3526" stroke="#f0c95a" stroke-width="7"/>
+    <circle cx="230" cy="142" r="112" fill="url(#skin)" stroke="#2c120d" stroke-width="10"/>
+    <path d="M118 122c26-86 126-120 216-52-64-5-124 9-184 50z" fill="#17100d" stroke="#2c120d" stroke-width="9"/>
+    <path d="M154 154c24-18 56-18 80 0M248 154c28-17 60-16 84 4" fill="none" stroke="#3a170f" stroke-width="9" stroke-linecap="round"/>
+    <ellipse cx="186" cy="178" rx="15" ry="18" fill="#fff"/><ellipse cx="278" cy="180" rx="15" ry="18" fill="#fff"/>
+    <circle cx="190" cy="184" r="6" fill="#111"/><circle cx="282" cy="186" r="6" fill="#111"/>
+    <path d="M176 218c34 16 78 17 112 0" stroke="#17100d" stroke-width="18" stroke-linecap="round"/>
+    <path d="M182 244c34 28 80 28 116 0" fill="none" stroke="#5b1a10" stroke-width="9" stroke-linecap="round"/>
+    <path d="M58 346l-106 48M404 342l108-88" stroke="#ffd0a4" stroke-width="34" stroke-linecap="round"/>
+    <circle cx="-56" cy="398" r="24" fill="#ffd0a4"/>
+    <path d="M520 246c50-16 86 18 78 62-8 43-47 66-96 54l-22-8 16-96z" fill="#ffd0a4" stroke="#2c120d" stroke-width="8"/>
+    <path d="M520 270l46 46M566 270l-44 48" stroke="#2c120d" stroke-width="8" stroke-linecap="round"/>
+  </g>
+  <g filter="url(#glow)">
+    <path d="M78 418c146-76 284-74 414 8s244 74 330-8" fill="none" stroke="#f0c95a" stroke-width="12" opacity="0.72"/>
+    <path d="M88 458c122-42 236-42 342 0s230 42 374-20" fill="none" stroke="#38c286" stroke-width="8" opacity="0.66"/>
+  </g>
+  <text x="450" y="82" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="54" fill="#f7f2e9" stroke="#07100b" stroke-width="10" paint-order="stroke">VERY GOOD</text>
+  <text x="450" y="562" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-size="70" fill="#f0c95a" stroke="#07100b" stroke-width="12" paint-order="stroke">VERY NICE</text>
+</svg>

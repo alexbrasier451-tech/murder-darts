@@ -948,6 +948,12 @@ button:disabled {
   --lex-c: #ef3e3e;
 }
 
+.lex-tone-very-nice {
+  --lex-a: #f0c95a;
+  --lex-b: #38c286;
+  --lex-c: #f7f2e9;
+}
+
 .lex-tone-wicked {
   --lex-a: #b78cff;
   --lex-b: #ff5ba7;
@@ -1195,6 +1201,15 @@ button:disabled {
   .lex-tone-tirty-tree .lex-graphic-card strong {
     font-size: clamp(1.75rem, 10vw, 3.45rem);
   }
+}
+
+.lex-tone-very-nice .lex-scene-art {
+  animation-name: lex-pub-bounce;
+  filter: saturate(1.26) contrast(1.08);
+}
+
+.lex-tone-very-nice .lex-graphic-card strong {
+  font-size: clamp(2rem, 10vw, 5.1rem);
 }
 @keyframes lex-scene-surge {
   0% {

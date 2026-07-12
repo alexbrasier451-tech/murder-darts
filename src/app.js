@@ -8,7 +8,7 @@ import {
   targetIsClosed,
   targetIsOpenFor,
   undoLastDart
-} from "./rules.js?v=43";
+} from "./rules.js?v=44";
 import {
   X01_FORMATS,
   applyX01Visit,
@@ -16,7 +16,7 @@ import {
   getX01Stats,
   getX01TargetLabel,
   undoX01Visit
-} from "./x01-rules.js?v=43";
+} from "./x01-rules.js?v=44";
 
 const MURDER_STORAGE_KEY = "murder-darts-current-match";
 const X01_STORAGE_KEY = "darts-x01-current-match";
@@ -114,7 +114,7 @@ function renderSplashScreen() {
   app.innerHTML = `
     <section class="splash-screen" aria-label="Darts Night opening screen">
       <div class="splash-art-frame">
-        <img src="./assets/splash-dartboard-cape.webp?v=43" alt="Dartboard with a red superhero cape" fetchpriority="high">
+        <img src="./assets/splash-dartboard-cape.webp?v=44" alt="Dartboard with a red superhero cape" fetchpriority="high">
       </div>
       <div class="splash-title">
         <p class="eyebrow">Darts scorer</p>
@@ -1443,7 +1443,7 @@ function showLexModeStatus(enabled) {
     "<div class=\"lex-corp-burst\" aria-hidden=\"true\"></div>",
     "<section class=\"lex-corp-popup\">",
     "<div class=\"lex-corp-scene\" aria-hidden=\"true\">",
-    "<img src=\"./assets/lex/lex-corp-activation.svg?v=43\" alt=\"\">",
+    "<img src=\"./assets/lex/lex-corp-activation.svg?v=44\" alt=\"\">",
     "</div>",
     "<div class=\"lex-corp-copy\">",
     "<span>Lex Corp</span>",
@@ -1534,6 +1534,17 @@ function getLexGraphic(score) {
     };
   }
 
+  if (score === 60) {
+    return {
+      tone: "very-nice",
+      scene: "very-nice",
+      title: "Very Good, Very Nice",
+      caption: "60 scored",
+      kicker: "Meme compliance",
+      art: "60"
+    };
+  }
+
   const dartScores = new Map([
     [80, ["Great First Dart", "First dart did the work"]],
     [120, ["Great Second Dart", "Second dart cleaned it up"]],
@@ -1580,7 +1591,7 @@ function showLexGraphic(graphic) {
     "<div class=\"lex-burst\" aria-hidden=\"true\"></div>",
     "<section class=\"lex-graphic-card\" data-art=\"" + escapeHtml(graphic.art || "") + "\">",
     "<div class=\"lex-scene lex-scene-" + escapeHtml(scene) + "\" aria-hidden=\"true\">",
-    "<img class=\"lex-scene-art\" src=\"./assets/lex/" + lexSceneAsset(scene) + ".svg?v=43\" alt=\"\">",
+    "<img class=\"lex-scene-art\" src=\"./assets/lex/" + lexSceneAsset(scene) + ".svg?v=44\" alt=\"\">",
     "</div>",
     "<div class=\"lex-copy\">",
     "<span>" + escapeHtml(graphic.kicker) + "</span>",
@@ -1615,6 +1626,8 @@ function lexSceneAsset(scene) {
       return "wicked-bass";
     case "hundred":
       return "hundred-caller";
+    case "very-nice":
+      return "very-nice-60";
     default:
       return "darts-great";
   }
@@ -2648,7 +2661,7 @@ function registerServiceWorker() {
 
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("./sw.js?v=43", { updateViaCache: "none" })
+      .register("./sw.js?v=44", { updateViaCache: "none" })
       .then((registration) => registration.update())
       .catch(() => {});
   });
